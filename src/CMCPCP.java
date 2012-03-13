@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 public class CMCPCP extends Plugin {
 
 	public final static String name = "CMCPCP";
-	private final static String version = "2.0_1";
+	public final static String version = "2.0_1";
 	protected static String currver = version;
 	public final String author = "DarkDiplomat";
 	public final Logger log = Logger.getLogger("Minecraft");
@@ -17,7 +17,9 @@ public class CMCPCP extends Plugin {
 	}
 	public synchronized void disable() {
 		log.info("[CMCPCP] Throwing out old coffee!");
-		listener.killTask();
+		try{
+		    listener.killTask();
+		}catch(Exception E){ }
 		log.info(name + " version " + version + " is disabled!");
 	}
 	public void enable() {

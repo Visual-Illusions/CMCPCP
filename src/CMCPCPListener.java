@@ -17,7 +17,7 @@ public class CMCPCPListener extends PluginListener {
 	public boolean onCommand(Player player, String[] split) {
 		if (split[0].equalsIgnoreCase("/cmcpcp")){
 			if (split.length == 1){
-				player.sendMessage("§6[CMCPCP] §eCanary Mod Coffee Pot Control Protocol v2.0");
+				player.sendMessage("§6[CMCPCP] §eCanary Mod Coffee Pot Control Protocol v"+CMCPCP.version);
 				if (CMCPCP.isLatest()){
 					player.sendMessage("§6[CMCPCP] §bSoftware is UP TO DATE");
 					return true;
