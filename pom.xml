@@ -1,0 +1,160 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>net.visualillusionsent</groupId>
+  <artifactId>CMCPCP</artifactId>
+  <version>3.0</version>
+  <name>CanaryModCoffeePotControlProtocol</name>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <ProgramStatus>STABLE</ProgramStatus>
+  </properties>
+  <description>Coffee Pot Control Protocol for CanaryMod</description>
+  <licenses>
+    <license>
+      <name>GNU General Public License v3</name>
+      <url>http://www.gnu.org/licenses/gpl.html</url>
+      <comments>
+        dConomy is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
+              
+        dConomy is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+        without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+        See the GNU General Public License for more details.
+      </comments>
+    </license>
+  </licenses>
+  <url>http://docs.visualillusionsent.net/CMCPCP/</url>
+  <inceptionYear>2011</inceptionYear>
+  <organization>
+   <name>Visual Illusions Entertainment</name>
+   <url>http://visualillusionsent.net</url>
+  </organization>
+  <scm>
+   <url>http://github.com/Visual-Illusions/CMCPCP</url>
+   <connection>GitHub</connection>
+   <developerConnection>darkdiplomat</developerConnection>
+  </scm>
+  <issueManagement>
+   <url>http://github.com/Visual-Illusions/CMCPCP/issues</url>
+   <system>GitHub Issues Tracker</system>
+  </issueManagement>
+  <ciManagement>
+   <url>http://ci.visualillusionsent.net/job/CMCPCP</url>
+   <system>Jenkins</system>
+  </ciManagement>
+  <distributionManagement>
+    <repository>
+      <id>vi-repo</id>
+      <url>ftp://repo.visualillusionsent.net/</url>
+    </repository>
+  </distributionManagement>
+  <repositories>
+    <repository>
+      <id>vi-repo</id>
+      <name>Visual Illusions Repository</name>
+      <url>http://repo.visualillusionsent.net/</url>
+      <releases>
+        <updatePolicy>always</updatePolicy>
+      </releases>
+      <snapshots>
+        <updatePolicy>always</updatePolicy>
+      </snapshots>
+    </repository>
+  </repositories>
+  <dependencies>
+   <dependency>
+    <groupId>net.canarymod</groupId>
+    <artifactId>CanaryLib</artifactId>
+    <version>0.8-SNAPSHOT</version>
+   </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <!-- Start: Generate Timestamp -->
+      <plugin>
+        <groupId>com.github.goldin</groupId>
+        <artifactId>timestamp-maven-plugin</artifactId>
+        <version>0.2.5</version>
+        <executions>
+          <execution>
+            <id>set-build-timestamp</id>
+            <goals>
+              <goal>timestamp</goal>
+            </goals>
+            <phase>validate</phase>
+              <configuration>
+                <timestamp>
+                  <property>timestamp</property>
+                  <pattern>yyyyMMddHHmm</pattern>
+                  <timezone>GMT-6</timezone>
+                  <locale>US</locale>
+                </timestamp>
+              </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- End: Generate Timestamp -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.4</version>
+        <configuration>
+          <finalName>${project.build.finalName}</finalName>
+          <archive>
+            <addMavenDescriptor>false</addMavenDescriptor>
+            <manifest>
+              <addClasspath>false</addClasspath>
+            </manifest>
+            <manifestEntries>
+                <Title>CanaryModCoffeePotControlProtocol</Title>
+                <Version>${project.version}</Version>
+                <Build>${timestamp}</Build>
+                <ProgramStatus>${ProgramStatus}</ProgramStatus>
+                <Vendor>Visual Illusions Entertainment</Vendor>
+                <Built-By>${user.name}</Built-By>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+    <pluginManagement>
+     <plugins>
+      <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+      <plugin>
+       <groupId>org.eclipse.m2e</groupId>
+       <artifactId>lifecycle-mapping</artifactId>
+       <version>1.0.0</version>
+       <configuration>
+        <lifecycleMappingMetadata>
+         <pluginExecutions>
+          <pluginExecution>
+           <pluginExecutionFilter>
+            <groupId>com.github.goldin</groupId>
+            <artifactId>timestamp-maven-plugin</artifactId>
+            <versionRange>[0.2.5,)</versionRange>
+            <goals>
+             <goal>timestamp</goal>
+            </goals>
+           </pluginExecutionFilter>
+           <action>
+            <ignore></ignore>
+           </action>
+          </pluginExecution>
+         </pluginExecutions>
+        </lifecycleMappingMetadata>
+       </configuration>
+      </plugin>
+     </plugins>
+    </pluginManagement>
+    <extensions>
+      <!-- FTP Extension to upload to repo.visualillusionsent.net -->
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ftp</artifactId>
+        <version>1.0-alpha-6</version>
+      </extension>
+    </extensions>
+  </build>
+</project>
