@@ -29,7 +29,7 @@ public final class CoffeePotController{
     private Timer brew;
 
     public CoffeePotController(){
-        this.settings = new PropertiesFile("plugins/CanaryModCoffeePotControlProtocol/settings.cfg");
+        this.settings = new PropertiesFile("config/CanaryModCoffeePotControlProtocol/settings.cfg");
         if (settings.getPropertiesMap().isEmpty()) {
             settings.getInt("coffeepot.size", 12);
             settings.addComment("coffeepot.size", "The number of cups the CoffeePot holds");
