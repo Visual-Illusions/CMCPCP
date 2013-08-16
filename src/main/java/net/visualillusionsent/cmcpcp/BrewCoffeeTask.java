@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses/gpl.html
  */
-package net.visualillusionsent.minecraft.server.mod.canary.plugin.cmcpcp;
+package net.visualillusionsent.cmcpcp;
 
 import java.util.TimerTask;
 import net.canarymod.Canary;
