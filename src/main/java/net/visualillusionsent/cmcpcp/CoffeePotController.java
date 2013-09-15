@@ -19,10 +19,10 @@
  */
 package net.visualillusionsent.cmcpcp;
 
-import java.util.Timer;
-
 import net.canarymod.Canary;
 import net.visualillusionsent.utils.PropertiesFile;
+
+import java.util.Timer;
 
 public final class CoffeePotController {
     private final PropertiesFile settings;

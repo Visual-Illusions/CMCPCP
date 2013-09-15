@@ -19,12 +19,6 @@
  */
 package net.visualillusionsent.cmcpcp;
 
-import static net.visualillusionsent.cmcpcp.CanaryModCoffeePotControlProtocol.$;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import net.canarymod.Canary;
 import net.canarymod.api.entity.living.humanoid.Player;
 import net.canarymod.api.inventory.Item;
@@ -37,6 +31,12 @@ import net.canarymod.commandsys.CommandDependencyException;
 import net.canarymod.commandsys.CommandListener;
 import net.visualillusionsent.utils.StringUtils;
 import net.visualillusionsent.utils.VersionChecker;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import static net.visualillusionsent.cmcpcp.CanaryModCoffeePotControlProtocol.$;
 
 public final class ProtocolCommandListener implements CommandListener {
 
@@ -52,6 +52,7 @@ public final class ProtocolCommandListener implements CommandListener {
         pre.add(Colors.ORANGE + "Built: " + Colors.LIGHT_GREEN + $.getBuildTime());
         pre.add(Colors.ORANGE + "Developer(s): " + Colors.LIGHT_GREEN + "darkdiplomat");
         pre.add(Colors.ORANGE + "Website: " + Colors.LIGHT_GREEN + $.getWikiLink());
+        pre.add(Colors.ORANGE + "Sources: " + Colors.LIGHT_GREEN + $.getSourceLink());
         pre.add(Colors.ORANGE + "Issues: " + Colors.LIGHT_GREEN + $.getIssuesLink());
 
         // Next line should always remain at the end of the About

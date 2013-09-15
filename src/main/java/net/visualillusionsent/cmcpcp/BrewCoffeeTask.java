@@ -19,9 +19,9 @@
  */
 package net.visualillusionsent.cmcpcp;
 
-import java.util.TimerTask;
-
 import net.canarymod.Canary;
+
+import java.util.TimerTask;
 
 public final class BrewCoffeeTask extends TimerTask {
     private final CoffeePotController controller;

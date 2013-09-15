@@ -19,11 +19,6 @@
  */
 package net.visualillusionsent.cmcpcp;
 
-import java.io.IOException;
-import java.util.jar.Attributes;
-import java.util.jar.JarFile;
-import java.util.jar.Manifest;
-
 import net.canarymod.Canary;
 import net.canarymod.commandsys.CommandDependencyException;
 import net.canarymod.plugin.Plugin;
@@ -31,6 +26,11 @@ import net.visualillusionsent.utils.DateUtils;
 import net.visualillusionsent.utils.ProgramStatus;
 import net.visualillusionsent.utils.UtilityException;
 import net.visualillusionsent.utils.VersionChecker;
+
+import java.io.IOException;
+import java.util.jar.Attributes;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 
 public final class CanaryModCoffeePotControlProtocol extends Plugin {
 
@@ -177,5 +177,9 @@ public final class CanaryModCoffeePotControlProtocol extends Plugin {
 
     final String getIssuesLink() {
         return this.getCanaryInf().getString("issuesLink");
+    }
+
+    final String getSourceLink() {
+        return this.getCanaryInf().getString("sourceLink");
     }
 }

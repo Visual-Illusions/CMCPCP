@@ -27,7 +27,7 @@
             </comments>
         </license>
     </licenses>
-    <url>http://docs.visualillusionsent.net/CMCPCP/</url>
+    <url>http://wiki.visualillusionsent.net/CanaryModCoffeePotControlProtocol_(CMCPCP)</url>
     <inceptionYear>2011</inceptionYear>
     <organization>
         <name>Visual Illusions Entertainment</name>
@@ -81,6 +81,29 @@
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.google.code.maven-replacer-plugin</groupId>
+                <artifactId>replacer</artifactId>
+                <version>1.5.2</version>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>replace</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <file>/${basedir}/target/classes/Canary.inf</file>
+                    <replacements>
+                        <replacement>
+                            <token>[version]</token>
+                            <value>${project.version}</value>
+                        </replacement>
+                    </replacements>
+                    <regex>false</regex>
                 </configuration>
             </plugin>
             <plugin>
