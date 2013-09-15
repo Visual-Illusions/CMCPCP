@@ -1,19 +1,19 @@
 /*
  * CanaryMod Coffee Pot Control Protocol v3.x
  * Copyright (C) 2011-2013 Visual Illusions Entertainment
- * 
+ *
  * Author: Jason Jones (darkdiplomat) <darkdiplomat@visualillusionsent.net>
- * 
+ *
  * This Program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses/gpl.html
  */
@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+
 import net.canarymod.Canary;
 import net.canarymod.commandsys.CommandDependencyException;
 import net.canarymod.plugin.Plugin;
@@ -36,16 +37,14 @@ public final class CanaryModCoffeePotControlProtocol extends Plugin {
     static CanaryModCoffeePotControlProtocol $;
     private final CoffeePotController cpc;
     private final VersionChecker vc;
-    private float version;
-    private short build;
-    private String buildTime;
+    private String version, build, buildTime;
     private ProgramStatus status;
 
     public CanaryModCoffeePotControlProtocol() {
         $ = this;
-        cpc = new CoffeePotController();
+        this.cpc = new CoffeePotController();
         readManifest();
-        vc = new VersionChecker(getName(), String.valueOf(version), String.valueOf(build), "http://visualillusionsent.net/minecraft/plugins/", status, false);
+        this.vc = new VersionChecker(getName(), version, build, "http://visualillusionsent.net/minecraft/plugins/", status, false);
     }
 
     public final boolean enable() {
@@ -90,11 +89,12 @@ public final class CanaryModCoffeePotControlProtocol extends Plugin {
                 try {
                     jar.close();
                 }
-                catch (IOException e) {}
+                catch (IOException e) {
+                }
             }
-            if (ex != null) {
-                throw ex;
-            }
+        }
+        if (ex != null) {
+            throw ex;
         }
         return toRet;
     }
@@ -103,8 +103,8 @@ public final class CanaryModCoffeePotControlProtocol extends Plugin {
         try {
             Manifest manifest = getManifest();
             Attributes mainAttribs = manifest.getMainAttributes();
-            version = Float.parseFloat(mainAttribs.getValue("Version").replace("-SNAPSHOT", ""));
-            build = Short.parseShort(mainAttribs.getValue("Build"));
+            version = mainAttribs.getValue("Version").replace("-SNAPSHOT", "");
+            build = mainAttribs.getValue("Build");
             buildTime = mainAttribs.getValue("Build-Time");
             try {
                 status = ProgramStatus.valueOf(mainAttribs.getValue("ProgramStatus"));
@@ -114,13 +114,14 @@ public final class CanaryModCoffeePotControlProtocol extends Plugin {
             }
         }
         catch (Exception ex) {
-            version = -1.0F;
-            build = -1;
+            version = "-1";
+            build = "-1";
             buildTime = "19700101-0000";
+            status = ProgramStatus.UNKNOWN;
         }
     }
 
-    private final void checkStatus() {
+    private void checkStatus() {
         if (status == ProgramStatus.UNKNOWN) {
             getLogman().severe(getName() + " has declared itself as an 'UNKNOWN STATUS' build. Use is not advised and could cause damage to your system!");
         }
@@ -135,7 +136,7 @@ public final class CanaryModCoffeePotControlProtocol extends Plugin {
         }
     }
 
-    private final void checkVersion() {
+    private void checkVersion() {
         Boolean islatest = vc.isLatest();
         if (islatest == null) {
             getLogman().warning("VersionCheckerError: " + vc.getErrorMessage());
@@ -146,11 +147,11 @@ public final class CanaryModCoffeePotControlProtocol extends Plugin {
         }
     }
 
-    final float getRawVersion() {
+    final String getRawVersion() {
         return version;
     }
 
-    final short getBuildNumber() {
+    final String getBuildNumber() {
         return build;
     }
 

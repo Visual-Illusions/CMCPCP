@@ -1,129 +1,118 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>net.visualillusionsent</groupId>
-  <artifactId>CMCPCP</artifactId>
-  <version>3.1</version>
-  <name>CanaryModCoffeePotControlProtocol</name>
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <ProgramStatus>STABLE</ProgramStatus>
-  </properties>
-  <description>Coffee Pot Control Protocol for CanaryMod</description>
-  <licenses>
-    <license>
-      <name>GNU General Public License v3</name>
-      <url>http://www.gnu.org/licenses/gpl.html</url>
-      <comments>
-        CanaryModCoffeePotControlProtocol is free software: you can redistribute it and/or modify
-        it under the terms of the GNU General Public License as published by
-        the Free Software Foundation, either version 3 of the License, or
-        (at your option) any later version.
-              
-        This Program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
-        without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-        See the GNU General Public License for more details.
-      </comments>
-    </license>
-  </licenses>
-  <url>http://docs.visualillusionsent.net/CMCPCP/</url>
-  <inceptionYear>2011</inceptionYear>
-  <organization>
-   <name>Visual Illusions Entertainment</name>
-   <url>http://visualillusionsent.net</url>
-  </organization>
-  <scm>
-   <url>https://github.com/Visual-Illusions/CMCPCP</url>
-   <connection>GitHub</connection>
-   <developerConnection>scm:git:git@github.com:Visual-Illusions/CMCPCP.git</developerConnection>
-  </scm>
-  <issueManagement>
-   <url>http://github.com/Visual-Illusions/CMCPCP/issues</url>
-   <system>GitHub Issues Tracker</system>
-  </issueManagement>
-  <ciManagement>
-   <url>http://ci.visualillusionsent.net/job/CMCPCP</url>
-   <system>Jenkins</system>
-  </ciManagement>
-  <distributionManagement>
-    <repository>
-      <id>vi-repo</id>
-      <url>ftp://repo.visualillusionsent.net/</url>
-    </repository>
-  </distributionManagement>
-  <repositories>
-    <repository>
-      <id>vi-repo</id>
-      <name>Visual Illusions Repository</name>
-      <url>http://repo.visualillusionsent.net/</url>
-      <releases>
-        <updatePolicy>always</updatePolicy>
-      </releases>
-      <snapshots>
-        <updatePolicy>always</updatePolicy>
-      </snapshots>
-    </repository>
-  </repositories>
-  <dependencies>
-   <dependency>
-    <groupId>net.canarymod</groupId>
-    <artifactId>CanaryLib</artifactId>
-    <version>0.10-SNAPSHOT</version>
-   </dependency>
-  </dependencies>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>buildnumber-maven-plugin</artifactId>
-        <version>1.2</version>
-        <executions>
-          <execution>
-            <phase>validate</phase>
-            <goals>
-              <goal>create</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <doCheck>false</doCheck>
-          <doUpdate>false</doUpdate>
-          <format>{0,number}</format>
-          <items>
-            <item>buildNumber0</item>
-          </items>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>2.4</version>
-        <configuration>
-          <finalName>${project.build.finalName}</finalName>
-          <archive>
-            <addMavenDescriptor>false</addMavenDescriptor>
-            <manifest>
-              <addClasspath>false</addClasspath>
-            </manifest>
-            <manifestEntries>
-              <Title>CanaryModCoffeePotControlProtocol</Title>
-              <Version>${project.version}</Version>
-              <Build>${buildNumber}</Build>
-              <ProgramStatus>${ProgramStatus}</ProgramStatus>
-              <Vendor>Visual Illusions Entertainment</Vendor>
-              <Built-By>${user.name}</Built-By>
-              <Build-Time>${maven.build.timestamp}</Build-Time>
-            </manifestEntries>
-          </archive>
-        </configuration>
-      </plugin>
-    </plugins>
-    <extensions>
-      <!-- FTP Extension to upload to repo.visualillusionsent.net -->
-      <extension>
-        <groupId>org.apache.maven.wagon</groupId>
-        <artifactId>wagon-ftp</artifactId>
-        <version>2.4</version>
-      </extension>
-    </extensions>
-  </build>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>net.visualillusionsent</groupId>
+    <artifactId>CMCPCP</artifactId>
+    <version>3.1</version>
+    <name>CanaryModCoffeePotControlProtocol</name>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <ProgramStatus>STABLE</ProgramStatus>
+        <build.number>devel</build.number>
+    </properties>
+    <description>Coffee Pot Control Protocol for CanaryMod</description>
+    <licenses>
+        <license>
+            <name>GNU General Public License v3</name>
+            <url>http://www.gnu.org/licenses/gpl.html</url>
+            <comments>
+                CanaryModCoffeePotControlProtocol is free software: you can redistribute it and/or modify
+                it under the terms of the GNU General Public License as published by
+                the Free Software Foundation, either version 3 of the License, or
+                (at your option) any later version.
+
+                This Program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+                without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+                See the GNU General Public License for more details.
+            </comments>
+        </license>
+    </licenses>
+    <url>http://docs.visualillusionsent.net/CMCPCP/</url>
+    <inceptionYear>2011</inceptionYear>
+    <organization>
+        <name>Visual Illusions Entertainment</name>
+        <url>http://visualillusionsent.net</url>
+    </organization>
+    <scm>
+        <url>https://github.com/Visual-Illusions/CMCPCP</url>
+        <connection>GitHub</connection>
+        <developerConnection>scm:git:git@github.com:Visual-Illusions/CMCPCP.git</developerConnection>
+    </scm>
+    <issueManagement>
+        <url>http://github.com/Visual-Illusions/CMCPCP/issues</url>
+        <system>GitHub Issues Tracker</system>
+    </issueManagement>
+    <ciManagement>
+        <url>http://ci.visualillusionsent.net/job/CMCPCP</url>
+        <system>Jenkins</system>
+    </ciManagement>
+    <distributionManagement>
+        <repository>
+            <id>vi-repo</id>
+            <url>ftp://repo.visualillusionsent.net/</url>
+        </repository>
+    </distributionManagement>
+    <repositories>
+        <repository>
+            <id>vi-repo</id>
+            <name>Visual Illusions Repository</name>
+            <url>http://repo.visualillusionsent.net/</url>
+            <releases>
+                <updatePolicy>always</updatePolicy>
+            </releases>
+            <snapshots>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+    <dependencies>
+        <dependency>
+            <groupId>net.canarymod</groupId>
+            <artifactId>CanaryLib</artifactId>
+            <version>1.0-RC-1</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <finalName>${project.build.finalName}</finalName>
+                    <archive>
+                        <addMavenDescriptor>false</addMavenDescriptor>
+                        <manifest>
+                            <addClasspath>false</addClasspath>
+                        </manifest>
+                        <manifestEntries>
+                            <Title>CanaryModCoffeePotControlProtocol</Title>
+                            <Version>${project.version}</Version>
+                            <Build>${build.number}</Build>
+                            <ProgramStatus>${ProgramStatus}</ProgramStatus>
+                            <Vendor>Visual Illusions Entertainment</Vendor>
+                            <Build-Time>${maven.build.timestamp}</Build-Time>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+        <extensions>
+            <!-- FTP Extension to upload to repo.visualillusionsent.net -->
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ftp</artifactId>
+                <version>2.4</version>
+            </extension>
+        </extensions>
+    </build>
 </project>

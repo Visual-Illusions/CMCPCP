@@ -1,21 +1,18 @@
 CanaryMod Coffee Pot Control Protocol (CMCPCP)
 ====================
 
+Copyright &copy; 2011-2013 Visual Illusions Entertainment
+Licensed under the GNU General Public License v3
+
 Brew and Drink Coffee on your server!
 ---------
 
 CanaryMod Coffee Pot Control Protocol is a plugin for the CanaryMod Minecraft Server Modification.
 
-(C) 2011-2013 Visual Illusions Entertainment
-
-Licensed under the GNU General Public License v3
+<b>Wiki/Information:</b> http://wiki.visualillusionsent.net/CanaryModCoffeePotControlProtocol_(CMCPCP)
 
 License
 ---------
-CanaryMod Coffee Pot Control Protocol v3.x
-Copyright (C) 2011-2013 Visual Illusions Entertainment
-
-Author: Jason Jones (darkdiplomat) <darkdiplomat@visualillusionsent.net>
 
 This Program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
