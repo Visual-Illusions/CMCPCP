@@ -1,21 +1,19 @@
 /*
- * CanaryMod Coffee Pot Control Protocol v3.x
- * Copyright (C) 2011-2013 Visual Illusions Entertainment
+ * This file is part of CanaryModCoffeePotControlProtocol.
  *
- * Author: Jason Jones (darkdiplomat) <darkdiplomat@visualillusionsent.net>
+ * Copyright © 2011-2013 Visual Illusions Entertainment
  *
- * This Program is free software: you can redistribute it and/or modify
+ * CanaryModCoffeePotControlProtocol is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * CanaryModCoffeePotControlProtocol is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see http://www.gnu.org/licenses/gpl.html
+ * You should have received a copy of the GNU General Public License along with CanaryModCoffeePotControlProtocol.
+ * If not, see http://www.gnu.org/licenses/gpl.html.
  */
 package net.visualillusionsent.cmcpcp;
 
@@ -23,183 +21,167 @@ import net.canarymod.Canary;
 import net.canarymod.api.entity.living.humanoid.Player;
 import net.canarymod.api.inventory.Item;
 import net.canarymod.api.inventory.ItemType;
-import net.canarymod.chat.Colors;
 import net.canarymod.chat.MessageReceiver;
-import net.canarymod.chat.TextFormat;
 import net.canarymod.commandsys.Command;
 import net.canarymod.commandsys.CommandDependencyException;
-import net.canarymod.commandsys.CommandListener;
-import net.visualillusionsent.utils.StringUtils;
-import net.visualillusionsent.utils.VersionChecker;
+import net.visualillusionsent.minecraft.plugin.ChatFormat;
+import net.visualillusionsent.minecraft.plugin.canary.VisualIllusionsCanaryPluginInformationCommand;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+public final class ProtocolCommandListener extends VisualIllusionsCanaryPluginInformationCommand {
 
-import static net.visualillusionsent.cmcpcp.CanaryModCoffeePotControlProtocol.$;
-
-public final class ProtocolCommandListener implements CommandListener {
-
-    private final List<String> about;
     private final Item coffee = Canary.factory().getItemFactory().newItem(ItemType.Potion, 47, 1);
+    private final CoffeePotController controller;
 
     public ProtocolCommandListener(CanaryModCoffeePotControlProtocol proto) throws CommandDependencyException {
+        super(proto);
+        this.controller = proto.getController();
         Canary.commands().registerCommands(this, proto, false);
-        List<String> pre = new ArrayList<String>();
-        pre.add(center(Colors.TURQUIOSE + "--- " + Colors.LIGHT_GREEN + $.getName() + Colors.ORANGE + " v" + $.getVersion() + Colors.TURQUIOSE + " ---"));
-        pre.add("$VERSION_CHECK$");
-        pre.add(Colors.ORANGE + "Build: " + Colors.LIGHT_GREEN + $.getBuildNumber());
-        pre.add(Colors.ORANGE + "Built: " + Colors.LIGHT_GREEN + $.getBuildTime());
-        pre.add(Colors.ORANGE + "Developer(s): " + Colors.LIGHT_GREEN + "darkdiplomat");
-        pre.add(Colors.ORANGE + "Website: " + Colors.LIGHT_GREEN + $.getWikiLink());
-        pre.add(Colors.ORANGE + "Sources: " + Colors.LIGHT_GREEN + $.getSourceLink());
-        pre.add(Colors.ORANGE + "Issues: " + Colors.LIGHT_GREEN + $.getIssuesLink());
 
-        // Next line should always remain at the end of the About
-        pre.add(center(String.format("§6Copyright © %s-%s §2Visual §6I§9l§bl§4u§as§2i§5o§en§7s §AEntertainment", $.inceptionYear(), $.currentYear())));
-        about = Collections.unmodifiableList(pre);
     }
 
-    @Command(aliases = {"cmcpcp"},
+    @Command(aliases = { "cmcpcp" },
             description = "CanaryModCoffeePotControlProtocol command",
-            permissions = {"cmcpcp.main"},
+            permissions = { "cmcpcp.main" },
             toolTip = "/cmcpcp [brew|get|clean|check]")
     public final void ProtocolCommand(MessageReceiver msgrec, String[] args) {
-        for (String msg : about) {
-            if (msg.equals("$VERSION_CHECK$")) {
-                VersionChecker vc = $.getVersionChecker();
-                Boolean islatest = vc.isLatest();
-                if (islatest == null) {
-                    msgrec.message(center(Colors.LIGHT_GRAY + "VersionCheckerError: " + vc.getErrorMessage()));
-                }
-                else if (!vc.isLatest()) {
-                    msgrec.message(center(Colors.LIGHT_GRAY + vc.getUpdateAvailibleMessage()));
-                }
-                else {
-                    msgrec.message(center(Colors.LIGHT_GREEN + "Latest Version Installed"));
-                }
-            }
-            else {
-                msgrec.message(msg);
-            }
-        }
+        this.sendInformation(msgrec);
     }
 
-    @Command(aliases = {"brew"},
+    @Command(aliases = { "brew" },
             description = "CMCPCP BREW Command",
-            permissions = {"cmcpcp.brew"},
+            permissions = { "cmcpcp.brew" },
             toolTip = "/cmcpcp brew",
             parent = "cmcpcp")
     public final void brewCommand(MessageReceiver msgrec, String[] args) {
-        if ($.getController().reportedCoffeeLevel() <= 0) {
-            if ($.getController().brewCoffee()) {
-                if ($.getController().reportedDirtLevel() >= 5) {
-                    Canary.getServer().broadcastMessage("§6[CMCPCP] §cThe coffee pot is dirty and needs to be cleaned!");
+        try {
+            if (controller.reportedCoffeeLevel() <= 0) {
+                if (controller.brewCoffee()) {
+                    if (controller.reportedDirtLevel() >= 5) {
+                        controller.informAll("pot.dirty");
+                    }
+                }
+                else {
+                    controller.inform(msgrec, "error.400");
+                    controller.inform(msgrec, "in.progress");
                 }
             }
             else {
-                msgrec.message("§6[CMCPCP] §cERROR 400 BAD REQUEST");
-                msgrec.message("§cBrewing already in progress.");
+                controller.inform(msgrec, "error.503");
+                controller.inform(msgrec, "already.brewed");
             }
         }
-        else {
-            msgrec.message("§6[CMCPCP] §cERROR 503 SERVICE UNAVAILIBLE");
-            msgrec.message("§cCoffee has already been brewed.");
+        catch (Exception ex) {
+            controller.inform(msgrec, "error.500", ex.getMessage());
         }
     }
 
-    @Command(aliases = {"get"},
+    @Command(aliases = { "get" },
             description = "CMCPCP GET Command",
-            permissions = {"cmcpcp.get"},
+            permissions = { "cmcpcp.get" },
             toolTip = "/cmcpcp get",
             parent = "cmcpcp")
     public final void getCommand(MessageReceiver msgrec, String[] args) {
-        if ($.getController().reportBrewing()) {
-            msgrec.message("§6[CMCPCP] §cERROR 503 SERVICE UNAVAILIBLE");
-            msgrec.message("§cCoffee is being brewed.");
-            return;
-        }
-        else if ($.getController().reportedCoffeeLevel() <= 0) {
-            msgrec.message("§6[CMCPCP] §cERROR 400 BAD REQUEST");
-            msgrec.message("§cOut of Coffee.");
-            return;
-        }
-        if (msgrec instanceof Player) {
-            $.getController().takeCup();
-            Player player = (Player)msgrec;
-            Item coffee = this.coffee.clone();
-            coffee.getMetaTag().put("CMCPCP_COLDTIME", System.currentTimeMillis() + 600000);
-            if ($.getController().reportedDirtLevel() >= 5) {
-                coffee.setDisplayName("Tainted Cup-o-Coffee");
-                coffee.getMetaTag().put("CMCPCP_TAINTED", true);
-                player.giveItem(coffee);
+        try {
+            if (controller.reportBrewing()) {
+                controller.inform(msgrec, "error.503");
+                controller.inform(msgrec, "in.progress");
+                return;
+            }
+            else if (controller.reportedCoffeeLevel() <= 0) {
+                controller.inform(msgrec, "error.400");
+                controller.inform(msgrec, "coffee.out");
+                return;
+            }
+            if (msgrec instanceof Player) {
+                controller.takeCup();
+                Player player = (Player) msgrec;
+                Item coffee = this.coffee.clone();
+                coffee.getMetaTag().put("CMCPCP_COLDTIME", System.currentTimeMillis() + 600000);
+                if (controller.reportedDirtLevel() >= 5) {
+                    coffee.setDisplayName("Tainted Cup-o-Coffee");
+                    coffee.getMetaTag().put("CMCPCP_TAINTED", true);
+                    player.giveItem(coffee);
+                }
+                else {
+                    coffee.setDisplayName("Cup-o-Coffee");
+                    coffee.getMetaTag().put("CMCPCP_TAINTED", false);
+                    player.giveItem(coffee);
+                }
+                controller.inform(msgrec, "one.cup");
             }
             else {
-                coffee.setDisplayName("Cup-o-Coffee");
-                coffee.getMetaTag().put("CMCPCP_TAINTED", false);
-                player.giveItem(coffee);
+                controller.inform(msgrec, "error.400");
+                controller.inform(msgrec, "no.machine");
             }
-            msgrec.message("§6[CMCPCP] §bHere's 1 Cup-o-Coffee");
         }
-        else {
-            msgrec.message("§6[CMCPCP] §cERROR 400 BAD REQUEST");
-            msgrec.message("§cCannot give a machine coffee.");
+        catch (Exception ex) {
+            controller.inform(msgrec, "error.500", ex.getMessage());
         }
     }
 
-    @Command(aliases = {"clean"},
+    @Command(aliases = { "clean" },
             description = "CMCPCP CLEAN Command",
-            permissions = {"cmcpcp.clean"},
+            permissions = { "cmcpcp.clean" },
             toolTip = "/cmcpcp clean",
             parent = "cmcpcp")
     public final void cleanCommand(MessageReceiver msgrec, String[] args) {
-        if ($.getController().reportBrewing()) {
-            msgrec.message("§6[CMCPCP] §cERROR 503 SERVICE UNAVAILIBLE");
-            msgrec.message("§cCoffee is being brewed.");
+        try {
+            if (controller.reportBrewing()) {
+                controller.inform(msgrec, "error.503");
+                controller.inform(msgrec, "in.progress");
+            }
+            else {
+                msgrec.message("§6[CMCPCP] §bCoffee Pot cleaned.");
+                controller.clearDirt();
+            }
         }
-        else {
-            msgrec.message("§6[CMCPCP] §bCoffee Pot cleaned.");
-            $.getController().clearDirt();
+        catch (Exception ex) {
+            controller.inform(msgrec, "error.500", ex.getMessage());
         }
     }
 
-    @Command(aliases = {"check"},
+    @Command(aliases = { "check" },
             description = "CMCPCP CHECK Command",
-            permissions = {"cmcpcp.check"},
+            permissions = { "cmcpcp.check" },
             toolTip = "/cmcpcp check",
             parent = "cmcpcp")
     public final void checkCommand(MessageReceiver msgrec, String[] args) {
-        if ($.getController().reportBrewing()) {
-            msgrec.message("§6[CMCPCP] §bBrewing in progress");
-            return;
+        try {
+            if (controller.reportBrewing()) {
+                msgrec.message("§6[CMCPCP] §bBrewing in progress");
+            }
+            else {
+                // Coffee Left
+                String color = ChatFormat.RED.toString(); // 0%
+                float percent = controller.reportedCoffeeLevel() * 100.0F / controller.reportedPotSize();
+                if (percent == 100) {
+                    // 100% Full
+                    color = ChatFormat.GREEN.toString();
+                }
+                else if (percent >= 75) {
+                    //99% to 75% Full
+                    color = ChatFormat.LIGHT_GREEN.toString();
+                }
+                else if (percent >= 50) {
+                    // 74% to 50% Full
+                    color = ChatFormat.YELLOW.toString();
+                }
+                else if (percent >= 25) {
+                    // 49% to 25% Full
+                    color = ChatFormat.ORANGE.toString();
+                }
+                else if (percent > 0) {
+                    color = ChatFormat.LIGHT_RED.toString();
+                }
+                controller.inform(msgrec, "coffee.left", color.concat(String.valueOf(controller.reportedCoffeeLevel())));
+                // Check Dirt Level
+                if (controller.reportedDirtLevel() >= 5) {
+                    controller.inform(msgrec, "pot.dirty");
+                }
+            }
         }
-        else {
-            if ($.getController().reportedCoffeeLevel() > 80 % $.getController().reportedPotSize()) {
-                msgrec.message("§6[CMCPCP] §bCups left = §2" + String.valueOf($.getController().reportedCoffeeLevel()));
-            }
-            else if ($.getController().reportedCoffeeLevel() > 60 % $.getController().reportedPotSize()) {
-                msgrec.message("§6[CMCPCP] §bCups left = §9" + String.valueOf($.getController().reportedCoffeeLevel()));
-            }
-            else if ($.getController().reportedCoffeeLevel() > 40 % $.getController().reportedPotSize()) {
-                msgrec.message("§6[CMCPCP] §bCups left = §e" + String.valueOf($.getController().reportedCoffeeLevel()));
-            }
-            else if ($.getController().reportedCoffeeLevel() > 20 % $.getController().reportedPotSize()) {
-                msgrec.message("§6[CMCPCP] §bCups left = §6" + String.valueOf($.getController().reportedCoffeeLevel()));
-            }
-            else if ($.getController().reportedCoffeeLevel() > 0 % $.getController().reportedPotSize()) {
-                msgrec.message("§6[CMCPCP] §bCups left = §c" + String.valueOf($.getController().reportedCoffeeLevel()));
-            }
-            else if ($.getController().reportedCoffeeLevel() == 0) {
-                msgrec.message("§6[CMCPCP] §bThe coffee pot is §4EMPTY");
-            }
+        catch (Exception ex) {
+            controller.inform(msgrec, "error.500", ex.getMessage());
         }
-        if ($.getController().reportedDirtLevel() >= 5) {
-            msgrec.message("§6[CMCPCP] §bThe coffee pot is §4DIRTY");
-        }
-    }
-
-    private final String center(String toCenter) {
-        String strColorless = TextFormat.removeFormatting(toCenter);
-        return StringUtils.padCharLeft(toCenter, (int)(Math.floor(63 - strColorless.length()) / 2), ' ');
     }
 }

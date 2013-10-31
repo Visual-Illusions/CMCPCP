@@ -2,13 +2,18 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.visualillusionsent</groupId>
-    <artifactId>CMCPCP</artifactId>
-    <version>3.2-SNAPSHOT</version>
+    <artifactId>cmcpcp</artifactId>
+    <version>3.3.0</version>
     <name>CanaryModCoffeePotControlProtocol</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <ProgramStatus>STABLE</ProgramStatus>
-        <build.number>devel</build.number>
+        <program.status>BETA</program.status>
+        <build.number>dev</build.number>
+        <canary.main.class>${project.groupId}.${project.artifactId}.CanaryModCoffeePotControlProtocol
+        </canary.main.class>
+        <vimcplugin.version>1.0.0</vimcplugin.version>
+        <version.check.url>http://visualillusionsent.net/minecraft/plugins/</version.check.url>
+        <devs>darkdiplomat</devs>
     </properties>
     <description>Coffee Pot Control Protocol for CanaryMod</description>
     <licenses>
@@ -27,19 +32,19 @@
             </comments>
         </license>
     </licenses>
-    <url>http://wiki.visualillusionsent.net/CanaryModCoffeePotControlProtocol_(CMCPCP)</url>
+    <url>http://bit.ly/12aF77d</url>
     <inceptionYear>2011</inceptionYear>
     <organization>
         <name>Visual Illusions Entertainment</name>
         <url>http://visualillusionsent.net</url>
     </organization>
     <scm>
-        <url>https://github.com/Visual-Illusions/CMCPCP</url>
+        <url>http://git.io/iAEYAw</url>
         <connection>GitHub</connection>
         <developerConnection>scm:git:git@github.com:Visual-Illusions/CMCPCP.git</developerConnection>
     </scm>
     <issueManagement>
-        <url>http://github.com/Visual-Illusions/CMCPCP/issues</url>
+        <url>http://git.io/52ryPg</url>
         <system>GitHub Issues Tracker</system>
     </issueManagement>
     <ciManagement>
@@ -67,22 +72,33 @@
     </repositories>
     <dependencies>
         <dependency>
-            <groupId>net.canarymod</groupId>
-            <artifactId>CanaryLib</artifactId>
-            <version>1.0-RC-1</version>
+            <groupId>net.visualillusionsent</groupId>
+            <artifactId>vimcplugin</artifactId>
+            <version>${vimcplugin.version}</version>
         </dependency>
     </dependencies>
     <build>
+        <finalName>${project.name}-${project.version}-b${build.number}</finalName>
         <plugins>
+            <!-- Timestamp for year -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
+                <groupId>com.keyboardsamurais.maven</groupId>
+                <artifactId>maven-timestamp-plugin</artifactId>
+                <version>1.0</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <propertyName>current.year</propertyName>
+                    <timestampPattern>yyyy</timestampPattern>
                 </configuration>
+                <executions>
+                    <execution>
+                        <phase>pre-clean</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
+            <!-- Update Plugin/Mod Description Files -->
             <plugin>
                 <groupId>com.google.code.maven-replacer-plugin</groupId>
                 <artifactId>replacer</artifactId>
@@ -96,46 +112,189 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <file>/${basedir}/target/classes/Canary.inf</file>
+                    <includes>
+                        <!-- Other files -->
+                        <include>target/**/*.cfg</include>
+                        <include>target/**/*.txt</include>
+                        <include>target/**/*.lang</include>
+                        <include>target/**/*.readme</include>
+                        <!-- CanaryMod -->
+                        <include>target/**/*.inf</include>
+                    </includes>
                     <replacements>
                         <replacement>
-                            <token>[version]</token>
+                            <token>{plugin.version}</token>
                             <value>${project.version}</value>
                         </replacement>
+                        <replacement>
+                            <token>{wiki}</token>
+                            <value>${project.url}</value>
+                        </replacement>
+                        <replacement>
+                            <token>{source.code}</token>
+                            <value>${project.scm.url}</value>
+                        </replacement>
+                        <replacement>
+                            <token>{issues}</token>
+                            <value>${project.issueManagement.url}</value>
+                        </replacement>
+                        <replace>
+                            <token>{version.check.url}</token>
+                            <value>${version.check.url}</value>
+                        </replace>
+                        <replace>
+                            <token>{program.status}</token>
+                            <value>${program.status}</value>
+                        </replace>
+                        <replace>
+                            <token>{build}</token>
+                            <value>${build.number}</value>
+                        </replace>
+                        <replace>
+                            <token>{build.time}</token>
+                            <value>${maven.build.timestamp}</value>
+                        </replace>
+                        <replace>
+                            <token>{devs}</token>
+                            <value>${devs}</value>
+                        </replace>
+                        <replace>
+                            <token>{copyright.years}</token>
+                            <value>${project.inceptionYear}-${current.year}</value>
+                        </replace>
+                        <replace>
+                            <token>{name}</token>
+                            <value>${project.name}</value>
+                        </replace>
+                        <replace>
+                            <token>{canary.main.class}</token>
+                            <value>${canary.main.class}</value>
+                        </replace>
                     </replacements>
                     <regex>false</regex>
                 </configuration>
             </plugin>
+            <!-- Compile plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+            <!-- Jar Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.4</version>
                 <configuration>
-                    <finalName>${project.build.finalName}</finalName>
                     <archive>
                         <addMavenDescriptor>false</addMavenDescriptor>
                         <manifest>
                             <addClasspath>false</addClasspath>
                         </manifest>
                         <manifestEntries>
-                            <Title>CanaryModCoffeePotControlProtocol</Title>
+                            <Title>${project.name}</Title>
                             <Version>${project.version}</Version>
                             <Build>${build.number}</Build>
-                            <ProgramStatus>${ProgramStatus}</ProgramStatus>
                             <Vendor>Visual Illusions Entertainment</Vendor>
+                            <Built-By>${user.name}</Built-By>
                             <Build-Time>${maven.build.timestamp}</Build-Time>
                         </manifestEntries>
                     </archive>
                 </configuration>
             </plugin>
+            <!-- License Header -->
+            <plugin>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>2.3</version>
+                <executions>
+                    <execution>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <quiet>false</quiet>
+                    <encoding>UTF-8</encoding>
+                    <strictCheck>true</strictCheck>
+                    <header>${basedir}/HEADER.txt</header>
+                    <keywords>
+                        <keyword>${project.name}</keyword>
+                        <keyword>license</keyword>
+                    </keywords>
+                    <mapping>
+                        <java>SLASHSTAR_STYLE</java>
+                    </mapping>
+                    <properties>
+                        <name>${project.name}</name>
+                        <years>${project.inceptionYear}-${current.year}</years>
+                        <gpl.type>GNU General Public License</gpl.type>
+                        <license.url>http://www.gnu.org/licenses/gpl.html</license.url>
+                    </properties>
+                    <includes>
+                        <include>src/main/java/**</include>
+                    </includes>
+                </configuration>
+            </plugin>
+            <!-- Need to shade in the needed classes from Visual Illusions Minecraft Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <artifactSet>
+                                <includes>
+                                    <!-- Only need to shade the VIMCPlugin stuff -->
+                                    <include>net.visualillusionsent:vimcplugin</include>
+                                </includes>
+                            </artifactSet>
+                            <filters>
+                                <filter>
+                                    <artifact>net.visualillusionsent:vimcplugin</artifact>
+                                    <includes>
+                                        <!-- Always include the license stuff -->
+                                        <include>META-INF/license/**</include>
+                                        <!-- Always include base VIMCPlugin stuff -->
+                                        <include>net/visualillusionsent/minecraft/plugin/**</include>
+                                        <!-- It Canary's CoffeePotControlProtocol -->
+                                        <include>net/visualillusionsent/minecraft/plugin/canary/**</include>
+                                    </includes>
+                                    <excludes>
+                                        <!-- Bukkit & Spout are unneeded -->
+                                        <exclude>net/visualillusionsent/minecraft/plugin/bukkit/**</exclude>
+                                        <exclude>net/visualillusionsent/minecraft/plugin/spout/**</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                            <!-- Relocate the classes to appropriate packages -->
+                            <relocations>
+                                <!-- Relocate base VIMCPlugin stuff to base of plugin -->
+                                <relocation>
+                                    <pattern>net.visualillusionsent.minecraft.plugin</pattern>
+                                    <shadedPattern>${project.groupId}.${project.artifactId}</shadedPattern>
+                                </relocation>
+                                <!-- Canary -->
+                                <relocation>
+                                    <pattern>net.visualillusionsent.minecraft.plugin.canary</pattern>
+                                    <shadedPattern>${project.groupId}.${project.artifactId}.canary</shadedPattern>
+                                </relocation>
+                            </relocations>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
-        <extensions>
-            <!-- FTP Extension to upload to repo.visualillusionsent.net -->
-            <extension>
-                <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-ftp</artifactId>
-                <version>2.4</version>
-            </extension>
-        </extensions>
     </build>
 </project>

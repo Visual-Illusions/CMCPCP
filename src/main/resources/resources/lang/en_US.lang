@@ -1,0 +1,36 @@
+;# {name} - English (US) Language File
+;# This file NEEDS to be in UTF-8 format!
+;# This file is also the default Language file and needs to be included
+;# DO NOT MODIFY THIS FILE! clone the file to create new translations.
+;# Saving the new file as <localeCode>.lang
+
+coffee.brewed=$c2Coffee is done brewing!
+coffee.brewing=$cBCoffee is now being brewed!
+pot.dirty=$cCThe coffee pot is dirty and needs to be cleaned!
+in.progress=$cCBrewing in progress.
+already.brewed=$cCCoffee has already been brewed.
+coffee.out=$cCOut of Coffee.
+no.machine=$cCCannot give a machine coffee.
+one.cup=$cBHere's 1 Cup-o-Coffee
+coffee.left=$cBCups left: {0}
+error.400=$cCERROR 400 BAD REQUEST
+error.500=$cCERROR 500 INTERNAL SERVER ERROR: {0}
+error.503=$cCERROR 503 SERVICE UNAVAILIBLE
+
+#;
+#; This file is part of {name}.
+#;
+#; Copyright © {copyright.years} Visual Illusions Entertainment.
+#;
+#; {name} is free software: you can redistribute it and/or modify
+#; it under the terms of the GNU General Public License as published by
+#; the Free Software Foundation, either version 3 of the License, or
+#; (at your option) any later version.
+#;
+#; {name} is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+#; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#; See the GNU General Public License for more details.
+#;
+#; You should have received a copy of the GNU General Public License along with {name}.
+#; If not, see http://www.gnu.org/licenses/gpl.html
+#;
