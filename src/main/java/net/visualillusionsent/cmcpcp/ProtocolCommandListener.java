@@ -27,6 +27,7 @@ import net.canarymod.commandsys.CommandDependencyException;
 import net.visualillusionsent.minecraft.plugin.ChatFormat;
 import net.visualillusionsent.minecraft.plugin.canary.VisualIllusionsCanaryPluginInformationCommand;
 
+/** @author Jason (darkdiplomat) */
 public final class ProtocolCommandListener extends VisualIllusionsCanaryPluginInformationCommand {
 
     private final Item coffee = Canary.factory().getItemFactory().newItem(ItemType.Potion, 47, 1);

@@ -32,6 +32,7 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.logging.Logger;
 
+/** @author Jason (darkdiplomat) */
 public final class CanaryModCoffeePotControlProtocol extends VisualIllusionsCanaryPlugin {
     private CoffeePotController cpc;
 

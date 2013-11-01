@@ -43,6 +43,7 @@ import net.visualillusionsent.utils.LocaleHelper;
 import java.io.File;
 import java.io.FileInputStream;
 
+/** @author Jason (darkdiplomat) */
 public final class MessageTranslator extends LocaleHelper {
     private static final String lang_dir = "lang/CanaryModCoffeePotControlProtocol/";
     private final String prefix = "$cA[$c6CMCPCP$cA] ";

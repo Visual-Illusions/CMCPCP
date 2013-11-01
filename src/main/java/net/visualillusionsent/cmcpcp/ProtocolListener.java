@@ -25,6 +25,7 @@ import net.canarymod.hook.HookHandler;
 import net.canarymod.hook.player.EatHook;
 import net.canarymod.plugin.PluginListener;
 
+/** @author Jason (darkdiplomat) */
 public final class ProtocolListener implements PluginListener {
     private final PotionEffect[] freshCoffee, coldCoffee, dirtyCoffee, coldDirtyCoffee;
 

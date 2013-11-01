@@ -26,6 +26,7 @@ import net.visualillusionsent.utils.PropertiesFile;
 
 import java.util.Timer;
 
+/** @author Jason (darkdiplomat) */
 public final class CoffeePotController {
     private final Logman logman;
     private final PropertiesFile settings;
