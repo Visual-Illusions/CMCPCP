@@ -1,3 +1,7 @@
+<!--
+CanaryModCoffeePotContolProtocol Maven POM File
+Copyright © 2011-2014 Visual Illusions Entertainment
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -5,9 +9,10 @@
     <artifactId>cmcpcp</artifactId>
     <version>3.2.0-SNAPSHOT</version>
     <name>CanaryModCoffeePotControlProtocol</name>
+    <url>http://bit.ly/1cGtn1W</url>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <build.number></build.number>
+        <build.number>dev</build.number>
         <canary.main.class>${project.groupId}.${project.artifactId}.CanaryModCoffeePotControlProtocol</canary.main.class>
         <vimcplugin.version>1.1.0-SNAPSHOT</vimcplugin.version>
         <status.url>http://status.visualillusionsent.net/</status.url>
@@ -30,7 +35,6 @@
             </comments>
         </license>
     </licenses>
-    <url>http://bit.ly/12aF77d</url>
     <inceptionYear>2011</inceptionYear>
     <organization>
         <name>Visual Illusions Entertainment</name>
@@ -70,7 +74,7 @@
         </dependency>
     </dependencies>
     <build>
-        <finalName>${project.name}-${project.version}</finalName>
+        <finalName>${project.name}-${project.version}-${build.number}</finalName>
         <plugins>
             <!-- Timestamp for year -->
             <plugin>
@@ -112,6 +116,8 @@
                         <include>target/**/*.readme</include>
                         <!-- CanaryMod -->
                         <include>target/**/*.inf</include>
+                        <!-- Bukkit -->
+                        <include>target/**/*.yml</include>
                     </includes>
                     <replacements>
                         <replacement>
@@ -121,10 +127,6 @@
                         <replacement>
                             <token>{wiki}</token>
                             <value>${project.url}</value>
-                        </replacement>
-                        <replacement>
-                            <token>{source.code}</token>
-                            <value>${project.scm.url}</value>
                         </replacement>
                         <replacement>
                             <token>{issues}</token>
@@ -279,8 +281,6 @@
                                     <shadedPattern>${project.groupId}.${project.artifactId}</shadedPattern>
                                 </relocation>
                             </relocations>
-                            <shadedArtifactAttached>true</shadedArtifactAttached>
-                            <shadedClassifierName>${build.number}</shadedClassifierName>
                         </configuration>
                     </execution>
                 </executions>

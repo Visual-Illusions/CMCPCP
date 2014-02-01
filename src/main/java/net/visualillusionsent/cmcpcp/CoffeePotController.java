@@ -36,6 +36,8 @@ public final class CoffeePotController {
     public CoffeePotController(CanaryModCoffeePotControlProtocol cmcpcp) {
         this.logman = cmcpcp.getLogman();
         this.settings = new PropertiesFile("config/CanaryModCoffeePotControlProtocol/settings.cfg");
+        settings.getBoolean("update.lang", true);
+        settings.setComments("update.lang", "Whether to allow auto-updating of the default lang files");
         settings.getInt("coffeepot.size", 12);
         settings.setComments("coffeepot.size", "The number of cups the CoffeePot holds");
         settings.getInt("brew.time", 120);
@@ -122,5 +124,9 @@ public final class CoffeePotController {
             locale = ((Player) msgrec).getLocale();
         }
         msgrec.message(translator.translate(key, locale, args));
+    }
+
+    final boolean updateLang() {
+        return settings.getBoolean("update.lang");
     }
 }

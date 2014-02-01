@@ -6,12 +6,12 @@ Brew and Drink Coffee on your server!
 
 CanaryMod Coffee Pot Control Protocol is a plugin for the CanaryMod Minecraft Server Modification.
 
-<b>Wiki/Information:</b> http://wiki.visualillusionsent.net/CanaryModCoffeePotControlProtocol_(CMCPCP)
+<b>Wiki/Information:</b> http://wiki.visualillusionsent.net/view/CanaryModCoffeePotControlProtocol_(CMCPCP)
 
 License
 ---------
 
-Copyright &copy; 2011-2013 Visual Illusions Entertainment
+Copyright &copy; 2011-2014 Visual Illusions Entertainment
   
 This Program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

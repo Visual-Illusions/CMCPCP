@@ -9,10 +9,8 @@ version={plugin.version}
 developers={devs}
 build.number={build}
 build.time={build.time}
-program.status={program.status}
 status.url={status.url}
 wiki.url={wiki}
-source.code={source.code}
 issues.url={issues}
 copyright.years={copyright.years}
 

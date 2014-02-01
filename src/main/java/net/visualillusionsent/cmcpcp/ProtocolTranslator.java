@@ -49,7 +49,7 @@ public final class ProtocolTranslator extends MessageTranslator {
     private final String prefix = "$cA[$c6CMCPCP$cA] ";
 
     ProtocolTranslator(CanaryModCoffeePotControlProtocol cmcpcp, String locale) {
-        super(cmcpcp, locale);
+        super(cmcpcp, locale, cmcpcp.getController().updateLang());
     }
 
     public final String translate(String key, String locale, Object... args) {
