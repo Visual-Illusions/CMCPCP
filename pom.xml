@@ -7,7 +7,7 @@
     <name>CanaryModCoffeePotControlProtocol</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <build.number>0</build.number>
+        <build.number></build.number>
         <canary.main.class>${project.groupId}.${project.artifactId}.CanaryModCoffeePotControlProtocol</canary.main.class>
         <vimcplugin.version>1.1.0-SNAPSHOT</vimcplugin.version>
         <status.url>http://status.visualillusionsent.net/</status.url>
@@ -70,7 +70,7 @@
         </dependency>
     </dependencies>
     <build>
-        <finalName>${project.name}-${project.version}-jnks${build.number}</finalName>
+        <finalName>${project.name}-${project.version}</finalName>
         <plugins>
             <!-- Timestamp for year -->
             <plugin>
@@ -280,7 +280,7 @@
                                 </relocation>
                             </relocations>
                             <shadedArtifactAttached>true</shadedArtifactAttached>
-                            <shadedClassifierName>jnks-${build.number}</shadedClassifierName>
+                            <shadedClassifierName>${build.number}</shadedClassifierName>
                         </configuration>
                     </execution>
                 </executions>
