@@ -21,7 +21,6 @@ import net.canarymod.Canary;
 import net.canarymod.api.entity.living.humanoid.Player;
 import net.canarymod.chat.MessageReceiver;
 import net.canarymod.logger.Logman;
-import net.visualillusionsent.minecraft.plugin.ChatFormat;
 import net.visualillusionsent.utils.PropertiesFile;
 
 import java.util.Timer;
@@ -30,7 +29,7 @@ import java.util.Timer;
 public final class CoffeePotController {
     private final Logman logman;
     private final PropertiesFile settings;
-    private final MessageTranslator translator;
+    private final ProtocolTranslator translator;
     private boolean isBrewing;
     private Timer brew;
 
@@ -49,7 +48,7 @@ public final class CoffeePotController {
         settings.setComments("coffeepot.level", "DO NOT EDIT LEVEL VALUE");
         settings.save();
         brew = new Timer();
-        translator = new MessageTranslator(settings.getString("server.locale"));
+        translator = new ProtocolTranslator(cmcpcp, settings.getString("server.locale"));
     }
 
     final int reportedPotSize() {

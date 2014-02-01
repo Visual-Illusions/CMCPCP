@@ -36,8 +36,7 @@ public final class ProtocolCommandListener extends VisualIllusionsCanaryPluginIn
     public ProtocolCommandListener(CanaryModCoffeePotControlProtocol proto) throws CommandDependencyException {
         super(proto);
         this.controller = proto.getController();
-        Canary.commands().registerCommands(this, proto, false);
-
+        proto.registerCommands(this, false);
     }
 
     @Command(aliases = { "cmcpcp" },

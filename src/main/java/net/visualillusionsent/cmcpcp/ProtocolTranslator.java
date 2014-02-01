@@ -35,6 +35,7 @@
 package net.visualillusionsent.cmcpcp;
 
 import net.visualillusionsent.minecraft.plugin.ChatFormat;
+import net.visualillusionsent.minecraft.plugin.MessageTranslator;
 import net.visualillusionsent.minecraft.plugin.PluginInitializationException;
 import net.visualillusionsent.utils.FileUtils;
 import net.visualillusionsent.utils.JarUtils;
@@ -44,42 +45,14 @@ import java.io.File;
 import java.io.FileInputStream;
 
 /** @author Jason (darkdiplomat) */
-public final class MessageTranslator extends LocaleHelper {
-    private static final String lang_dir = "lang/CanaryModCoffeePotControlProtocol/";
+public final class ProtocolTranslator extends MessageTranslator {
     private final String prefix = "$cA[$c6CMCPCP$cA] ";
 
-    static {
-        if (!new File(lang_dir).exists()) {
-            new File(lang_dir).mkdirs();
-        }
-        try {
-            if (!new File(lang_dir.concat("languages.txt")).exists()) {
-                moveLang("languages.txt");
-            }
-            else if (!FileUtils.md5SumMatch(CanaryModCoffeePotControlProtocol.class.getResourceAsStream("/resources/lang/languages.txt"), new FileInputStream(lang_dir.concat("languages.txt")))) {
-                moveLang("languages.txt");
-            }
-            if (!new File(lang_dir.concat("en_US.lang")).exists()) {
-                moveLang("en_US.lang");
-            }
-            else if (!FileUtils.md5SumMatch(CanaryModCoffeePotControlProtocol.class.getResourceAsStream("/resources/lang/en_US.lang"), new FileInputStream(lang_dir.concat("en_US.lang")))) {
-                moveLang("en_US.lang");
-            }
-        }
-        catch (Exception ex) {
-            throw new PluginInitializationException("Failed to verify and move lang files", ex);
-        }
-    }
-
-    MessageTranslator(String locale) {
-        super(true, lang_dir, locale);
+    ProtocolTranslator(CanaryModCoffeePotControlProtocol cmcpcp, String locale) {
+        super(cmcpcp, locale);
     }
 
     public final String translate(String key, String locale, Object... args) {
         return ChatFormat.formatString(prefix.concat(localeTranslate(key, locale, args)), "$c");
-    }
-
-    private static void moveLang(String locale) {
-        FileUtils.cloneFileFromJar(JarUtils.getJarPath(CanaryModCoffeePotControlProtocol.class), "resources/lang/".concat(locale), lang_dir.concat(locale));
     }
 }
