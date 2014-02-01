@@ -1,7 +1,7 @@
 /*
  * This file is part of CanaryModCoffeePotControlProtocol.
  *
- * Copyright © 2011-2013 Visual Illusions Entertainment
+ * Copyright © 2011-2014 Visual Illusions Entertainment
  *
  * CanaryModCoffeePotControlProtocol is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,17 +19,9 @@ package net.visualillusionsent.cmcpcp;
 
 import net.canarymod.Canary;
 import net.canarymod.commandsys.CommandDependencyException;
-import net.canarymod.plugin.Plugin;
 import net.visualillusionsent.minecraft.plugin.canary.VisualIllusionsCanaryPlugin;
-import net.visualillusionsent.utils.DateUtils;
-import net.visualillusionsent.utils.ProgramStatus;
 import net.visualillusionsent.utils.UtilityException;
-import net.visualillusionsent.utils.VersionChecker;
 
-import java.io.IOException;
-import java.util.jar.Attributes;
-import java.util.jar.JarFile;
-import java.util.jar.Manifest;
 import java.util.logging.Logger;
 
 /** @author Jason (darkdiplomat) */
@@ -46,10 +38,10 @@ public final class CanaryModCoffeePotControlProtocol extends VisualIllusionsCana
             return true;
         }
         catch (UtilityException uex) {
-            getLogman().logStacktrace("Failed to initialize...", uex);
+            getLogman().error("Failed to initialize...", uex);
         }
         catch (CommandDependencyException cdex) {
-            getLogman().logStacktrace("Failed to initialize...", cdex);
+            getLogman().error("Failed to initialize...", cdex);
         }
         return false;
     }
@@ -65,6 +57,6 @@ public final class CanaryModCoffeePotControlProtocol extends VisualIllusionsCana
 
     @Override
     public Logger getPluginLogger() {
-        return getLogman();
+        return logger;
     }
 }

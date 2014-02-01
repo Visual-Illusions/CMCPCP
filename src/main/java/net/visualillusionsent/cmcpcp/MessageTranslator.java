@@ -1,7 +1,7 @@
 /*
  * This file is part of CanaryModCoffeePotControlProtocol.
  *
- * Copyright © 2011-2013 Visual Illusions Entertainment
+ * Copyright © 2011-2014 Visual Illusions Entertainment
  *
  * CanaryModCoffeePotControlProtocol is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

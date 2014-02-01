@@ -3,16 +3,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.visualillusionsent</groupId>
     <artifactId>cmcpcp</artifactId>
-    <version>3.3.0</version>
+    <version>3.2.0-SNAPSHOT</version>
     <name>CanaryModCoffeePotControlProtocol</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <program.status>BETA</program.status>
-        <build.number>dev</build.number>
-        <canary.main.class>${project.groupId}.${project.artifactId}.CanaryModCoffeePotControlProtocol
-        </canary.main.class>
-        <vimcplugin.version>1.0.0</vimcplugin.version>
-        <version.check.url>http://visualillusionsent.net/minecraft/plugins/</version.check.url>
+        <build.number>0</build.number>
+        <canary.main.class>${project.groupId}.${project.artifactId}.CanaryModCoffeePotControlProtocol</canary.main.class>
+        <vimcplugin.version>1.1.0-SNAPSHOT</vimcplugin.version>
+        <status.url>http://status.visualillusionsent.net/</status.url>
         <devs>darkdiplomat</devs>
     </properties>
     <description>Coffee Pot Control Protocol for CanaryMod</description>
@@ -51,17 +49,11 @@
         <url>http://ci.visualillusionsent.net/job/CMCPCP</url>
         <system>Jenkins</system>
     </ciManagement>
-    <distributionManagement>
-        <repository>
-            <id>vi-repo</id>
-            <url>ftp://repo.visualillusionsent.net/</url>
-        </repository>
-    </distributionManagement>
     <repositories>
         <repository>
-            <id>vi-repo</id>
+            <id>vi-repo2</id>
             <name>Visual Illusions Repository</name>
-            <url>http://repo.visualillusionsent.net/</url>
+            <url>http://repo2.visualillusionsent.net/</url>
             <releases>
                 <updatePolicy>always</updatePolicy>
             </releases>
@@ -78,7 +70,7 @@
         </dependency>
     </dependencies>
     <build>
-        <finalName>${project.name}-${project.version}-b${build.number}</finalName>
+        <finalName>${project.name}-${project.version}-jnks${build.number}</finalName>
         <plugins>
             <!-- Timestamp for year -->
             <plugin>
@@ -139,12 +131,8 @@
                             <value>${project.issueManagement.url}</value>
                         </replacement>
                         <replace>
-                            <token>{version.check.url}</token>
-                            <value>${version.check.url}</value>
-                        </replace>
-                        <replace>
-                            <token>{program.status}</token>
-                            <value>${program.status}</value>
+                            <token>{status.url}</token>
+                            <value>${status.url}</value>
                         </replace>
                         <replace>
                             <token>{build}</token>
@@ -288,9 +276,11 @@
                                 <!-- Canary -->
                                 <relocation>
                                     <pattern>net.visualillusionsent.minecraft.plugin.canary</pattern>
-                                    <shadedPattern>${project.groupId}.${project.artifactId}.canary</shadedPattern>
+                                    <shadedPattern>${project.groupId}.${project.artifactId}</shadedPattern>
                                 </relocation>
                             </relocations>
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <shadedClassifierName>jnks-${build.number}</shadedClassifierName>
                         </configuration>
                     </execution>
                 </executions>
