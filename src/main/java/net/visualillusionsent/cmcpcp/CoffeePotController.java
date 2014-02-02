@@ -8,11 +8,11 @@
  * the Free Software Foundation, either version 3 of the License,
  * or (at your option) any later version.
  *
- * CanaryModCoffeePotControlProtocol is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with CanaryModCoffeePotControlProtocol.
+ * You should have received a copy of the GNU General Public License along with this program.
  * If not, see http://www.gnu.org/licenses/gpl.html.
  */
 package net.visualillusionsent.cmcpcp;
@@ -38,6 +38,8 @@ public final class CoffeePotController {
         this.settings = new PropertiesFile("config/CanaryModCoffeePotControlProtocol/settings.cfg");
         settings.getBoolean("update.lang", true);
         settings.setComments("update.lang", "Whether to allow auto-updating of the default lang files");
+        settings.getString("server.locale", "en_US");
+        settings.setComments("server.locale", "The default locale to use in messages");
         settings.getInt("coffeepot.size", 12);
         settings.setComments("coffeepot.size", "The number of cups the CoffeePot holds");
         settings.getInt("brew.time", 120);
@@ -50,7 +52,7 @@ public final class CoffeePotController {
         settings.setComments("coffeepot.level", "DO NOT EDIT LEVEL VALUE");
         settings.save();
         brew = new Timer();
-        translator = new ProtocolTranslator(cmcpcp, settings.getString("server.locale"));
+        translator = new ProtocolTranslator(cmcpcp, settings.getString("server.locale"), settings.getBoolean("update.lang"));
     }
 
     final int reportedPotSize() {
