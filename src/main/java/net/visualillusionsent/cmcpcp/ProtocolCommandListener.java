@@ -24,8 +24,13 @@ import net.canarymod.api.inventory.ItemType;
 import net.canarymod.chat.MessageReceiver;
 import net.canarymod.commandsys.Command;
 import net.canarymod.commandsys.CommandDependencyException;
+import net.canarymod.commandsys.TabComplete;
+import net.canarymod.commandsys.TabCompleteHelper;
 import net.visualillusionsent.minecraft.plugin.ChatFormat;
 import net.visualillusionsent.minecraft.plugin.canary.VisualIllusionsCanaryPluginInformationCommand;
+
+import java.util.Iterator;
+import java.util.List;
 
 /** @author Jason (darkdiplomat) */
 public final class ProtocolCommandListener extends VisualIllusionsCanaryPluginInformationCommand {
@@ -39,19 +44,40 @@ public final class ProtocolCommandListener extends VisualIllusionsCanaryPluginIn
         proto.registerCommands(this, false);
     }
 
-    @Command(aliases = { "cmcpcp" },
+    @Command(
+            aliases = { "cmcpcp" },
             description = "CanaryModCoffeePotControlProtocol command",
             permissions = { "cmcpcp.main" },
-            toolTip = "/cmcpcp [brew|get|clean|check]")
-    public final void ProtocolCommand(MessageReceiver msgrec, String[] args) {
+            toolTip = "/cmcpcp [brew|get|clean|check|cfgreload]",
+            tabCompleteMethod = "protoComp"
+    )
+    public final void protocolCommand(MessageReceiver msgrec, String[] args) {
         this.sendInformation(msgrec);
     }
 
-    @Command(aliases = { "brew" },
+    @Command(
+            aliases = { "cfgreload" },
+            description = "CMCPCP Config Reload",
+            permissions = { "cmcpcp.cfgreload" },
+            toolTip = "/cmcpcp cfgreload"
+    )
+    public final void cfgReloadCommand(MessageReceiver msgrec, String[] args) {
+        try {
+            controller.reload();
+            controller.inform(msgrec, "cfg.reload.success");
+        }
+        catch (Exception ex) {
+            controller.inform(msgrec, "cfg.reload.fail");
+        }
+    }
+
+    @Command(
+            aliases = { "brew" },
             description = "CMCPCP BREW Command",
             permissions = { "cmcpcp.brew" },
             toolTip = "/cmcpcp brew",
-            parent = "cmcpcp")
+            parent = "cmcpcp"
+    )
     public final void brewCommand(MessageReceiver msgrec, String[] args) {
         try {
             if (controller.reportedCoffeeLevel() <= 0) {
@@ -75,11 +101,13 @@ public final class ProtocolCommandListener extends VisualIllusionsCanaryPluginIn
         }
     }
 
-    @Command(aliases = { "get" },
+    @Command(
+            aliases = { "get" },
             description = "CMCPCP GET Command",
             permissions = { "cmcpcp.get" },
             toolTip = "/cmcpcp get",
-            parent = "cmcpcp")
+            parent = "cmcpcp"
+    )
     public final void getCommand(MessageReceiver msgrec, String[] args) {
         try {
             if (controller.reportBrewing()) {
@@ -119,11 +147,13 @@ public final class ProtocolCommandListener extends VisualIllusionsCanaryPluginIn
         }
     }
 
-    @Command(aliases = { "clean" },
+    @Command(
+            aliases = { "clean" },
             description = "CMCPCP CLEAN Command",
             permissions = { "cmcpcp.clean" },
             toolTip = "/cmcpcp clean",
-            parent = "cmcpcp")
+            parent = "cmcpcp"
+    )
     public final void cleanCommand(MessageReceiver msgrec, String[] args) {
         try {
             if (controller.reportBrewing()) {
@@ -140,11 +170,13 @@ public final class ProtocolCommandListener extends VisualIllusionsCanaryPluginIn
         }
     }
 
-    @Command(aliases = { "check" },
+    @Command(
+            aliases = { "check" },
             description = "CMCPCP CHECK Command",
             permissions = { "cmcpcp.check" },
             toolTip = "/cmcpcp check",
-            parent = "cmcpcp")
+            parent = "cmcpcp"
+    )
     public final void checkCommand(MessageReceiver msgrec, String[] args) {
         try {
             if (controller.reportBrewing()) {
@@ -183,5 +215,20 @@ public final class ProtocolCommandListener extends VisualIllusionsCanaryPluginIn
         catch (Exception ex) {
             controller.inform(msgrec, "error.500", ex.getMessage());
         }
+    }
+
+    @TabComplete
+    public final List<String> protoComp(MessageReceiver msgrec, String[] args) {
+        if (args.length == 1) {
+            List<String> matching = TabCompleteHelper.matchTo(args, new String[]{ "brew", "get", "clean", "check", "cfgreload" });
+            Iterator<String> matchItr = matching.iterator();
+            while (matchItr.hasNext()) {
+                if (!msgrec.hasPermission("cmcpcp.".concat(matchItr.next()))) {
+                    matchItr.remove();
+                }
+            }
+            return matching;
+        }
+        return null;
     }
 }

@@ -6,6 +6,8 @@
 ;# DO NOT MODIFY THIS FILE! clone the file to create new translations.
 ;# Saving the new file as <localeCode>.lang
 
+cfg.reload.success=CMCPCP configuration reloaded.
+cfg.reload.fail=Failed to reload CMCPCP configuration...
 coffee.brewed=~2Coffee is done brewing!
 coffee.brewing=~BCoffee is now being brewed!
 pot.dirty=~CThe coffee pot is dirty and needs to be cleaned!

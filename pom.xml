@@ -20,6 +20,24 @@ Copyright © 2011-2014 Visual Illusions Entertainment
         <devs>darkdiplomat</devs>
         <build.number/>
     </properties>
+    <organization>
+        <name>Visual Illusions Entertainment</name>
+        <url>http://visualillusionsent.net</url>
+    </organization>
+    <developers>
+        <developer>
+            <id>darkdiplomat</id>
+            <name>Jason</name>
+            <email>darkdiplomat@visualillusionsent.net</email>
+            <url>http://wiki.visualillusionsent.net/view/Darkdiplomat</url>
+            <organization>Visual Illusions Entertainment</organization>
+            <organizationUrl>http://visualillusionsent.net</organizationUrl>
+            <roles>
+                <role>project manager</role>
+                <role>lead developer</role>
+            </roles>
+        </developer>
+    </developers>
     <licenses>
         <license>
             <name>GNU General Public License v3</name>
@@ -36,10 +54,6 @@ Copyright © 2011-2014 Visual Illusions Entertainment
             </comments>
         </license>
     </licenses>
-    <organization>
-        <name>Visual Illusions Entertainment</name>
-        <url>http://visualillusionsent.net</url>
-    </organization>
     <scm>
         <url>http://git.io/iAEYAw</url>
         <connection>GitHub</connection>

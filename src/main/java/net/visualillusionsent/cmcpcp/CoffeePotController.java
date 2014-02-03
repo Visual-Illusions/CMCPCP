@@ -131,4 +131,8 @@ public final class CoffeePotController {
     final boolean updateLang() {
         return settings.getBoolean("update.lang");
     }
+
+    final void reload() {
+        settings.reload();
+    }
 }
