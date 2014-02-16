@@ -248,8 +248,6 @@ Copyright © 2011-2014 Visual Illusions Entertainment
                                         <include>META-INF/license/**</include>
                                         <!-- Always include base VIMCPlugin stuff -->
                                         <include>net/visualillusionsent/minecraft/plugin/**</include>
-                                        <!-- It Canary's CoffeePotControlProtocol -->
-                                        <include>net/visualillusionsent/minecraft/plugin/canary/**</include>
                                     </includes>
                                     <excludes>
                                         <!-- Bukkit & Spout are unneeded -->
@@ -265,7 +263,7 @@ Copyright © 2011-2014 Visual Illusions Entertainment
                                     <pattern>net.visualillusionsent.minecraft.plugin</pattern>
                                     <shadedPattern>${project.groupId}.${project.artifactId}</shadedPattern>
                                 </relocation>
-                                <!-- Canary -->
+                                <!-- Relocate VIMCPlugin Canary stuff to base of plugin -->
                                 <relocation>
                                     <pattern>net.visualillusionsent.minecraft.plugin.canary</pattern>
                                     <shadedPattern>${project.groupId}.${project.artifactId}</shadedPattern>

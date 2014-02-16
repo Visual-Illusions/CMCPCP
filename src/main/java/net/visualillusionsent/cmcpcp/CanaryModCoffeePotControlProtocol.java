@@ -22,8 +22,6 @@ import net.canarymod.commandsys.CommandDependencyException;
 import net.visualillusionsent.minecraft.plugin.canary.VisualIllusionsCanaryPlugin;
 import net.visualillusionsent.utils.UtilityException;
 
-import java.util.logging.Logger;
-
 /** @author Jason (darkdiplomat) */
 public final class CanaryModCoffeePotControlProtocol extends VisualIllusionsCanaryPlugin {
     private CoffeePotController cpc;
