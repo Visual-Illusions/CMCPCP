@@ -69,14 +69,14 @@ Copyright © 2011-2014 Visual Illusions Entertainment
         <system>GitHub Issues Tracker</system>
     </issueManagement>
     <ciManagement>
-        <url>http://ci.visualillusionsent.net/job/CMCPCP</url>
+        <url>https://ci.visualillusionsent.net/job/CMCPCP</url>
         <system>Jenkins</system>
     </ciManagement>
     <repositories>
         <repository>
-            <id>vi-repo2</id>
+            <id>vi-repo</id>
             <name>Visual Illusions Repository</name>
-            <url>http://repo2.visualillusionsent.net/repository/public/</url>
+            <url>http://repo.visualillusionsent.net/repository/public/</url>
         </repository>
     </repositories>
     <dependencies>

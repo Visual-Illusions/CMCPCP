@@ -1,5 +1,5 @@
-;# ${project.name} - Canary Plugin Configuration File
-;# Copyright © ${project.inceptionYear}-${current.year} Visual Illusions Entertainment
+;# CanaryMod Coffee Pot Control Protocol - Canary Plugin Configuration File
+;# Copyright © 2011-${current.year} Visual Illusions Entertainment
 ;# Licensed under the GNU General Public License Version 3
 
 name=${project.name}
