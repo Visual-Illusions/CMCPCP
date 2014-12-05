@@ -32,7 +32,7 @@ final class CoffeePotController {
     private final PropertiesFile settings;
     private final ProtocolTranslator translator;
     private boolean power = true, cold = true;
-    private ScheduledFuture coldtask, brewtask, cleantask;
+    private ScheduledFuture coldtask, brewtask, cleantask, shutofftask;
 
     public CoffeePotController(CanaryModCoffeePotControlProtocol cmcpcp) {
         this.logman = cmcpcp.getLogman();
@@ -51,7 +51,8 @@ final class CoffeePotController {
         settings.setComments("coffeepot.level", "DO NOT EDIT LEVEL VALUE");
         settings.save();
         translator = new ProtocolTranslator(cmcpcp, settings.getString("server.locale"), settings.getBoolean("update.lang"));
-        scheduleDelayedTaskInMinutes(new ChillTask(this, false), getBrewTime()); // Start warming up coffee
+        coldtask = scheduleDelayedTaskInMinutes(new ChillTask(this, false), getBrewTime()); // Start warming up coffee
+        shutofftask = scheduleDelayedTaskInMinutes(new AutoShutOffTask(this), 45);
     }
 
     final int reportedPotSize() {
@@ -96,6 +97,9 @@ final class CoffeePotController {
 
     final boolean brewCoffee() {
         if (brewtask == null || brewtask.isDone()) {
+            if (shutofftask != null && !shutofftask.isDone()) {
+                shutofftask.cancel(true); // Will reset this later
+            }
             if (coldtask != null && !coldtask.isDone()) {
                 coldtask.cancel(true);
             }
@@ -125,7 +129,12 @@ final class CoffeePotController {
         if (coldtask != null && !coldtask.isDone()) {
             coldtask.cancel(true);
         }
-        coldtask = scheduleDelayedTaskInMinutes(new ChillTask(this, !power), power ? getBrewTime() : getBrewTime() * 3);
+        if (cold != power) {
+            coldtask = scheduleDelayedTaskInMinutes(new ChillTask(this, !power), power ? getBrewTime() : getBrewTime() * 3);
+        }
+        if (!power && shutofftask != null && !shutofftask.isDone()) {
+            shutofftask.cancel(false); // If its running, its probably what called this togglePower so don't cancel if running
+        }
     }
 
     final void setCold(boolean cold) {
@@ -153,6 +162,7 @@ final class CoffeePotController {
         cold = false;
         settings.setInt("coffeepot.level", reportedPotSize());
         settings.save();
+        shutofftask = scheduleDelayedTaskInMinutes(new AutoShutOffTask(this), 45);
     }
 
     final void cleanUp() {
@@ -165,6 +175,9 @@ final class CoffeePotController {
         }
         if (cleantask != null && !cleantask.isDone()) {
             cleantask.cancel(true);
+        }
+        if (shutofftask != null && !shutofftask.isDone()) {
+            shutofftask.cancel(true);
         }
     }
 
