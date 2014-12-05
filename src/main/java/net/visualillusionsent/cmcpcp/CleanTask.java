@@ -17,15 +17,18 @@
  */
 package net.visualillusionsent.cmcpcp;
 
-/** @author Jason (darkdiplomat) */
-final class BrewCoffeeTask implements Runnable {
+/**
+ * @author Jason Jones (darkdiplomat)
+ */
+final class CleanTask implements Runnable {
     private final CoffeePotController controller;
 
-    public BrewCoffeeTask(CoffeePotController controller) {
+    CleanTask(CoffeePotController controller) {
         this.controller = controller;
     }
 
-    public final void run() {
-        controller.done();
+    @Override
+    public void run() {
+        controller.clearDirt();
     }
 }

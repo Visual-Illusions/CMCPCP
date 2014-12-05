@@ -178,7 +178,11 @@ public final class ProtocolCommandListener extends VisualIllusionsCanaryPluginIn
     )
     public final void getCommand(MessageReceiver msgrec, String[] args) {
         try {
-            if (controller.reportBrewing()) {
+            if (!controller.reportPower()) {
+                controller.inform(msgrec, "error.503");
+                controller.inform(msgrec, "no.power");
+            }
+            else if (controller.reportBrewing()) {
                 controller.inform(msgrec, "error.503");
                 controller.inform(msgrec, "in.progress");
                 return;
@@ -231,14 +235,21 @@ public final class ProtocolCommandListener extends VisualIllusionsCanaryPluginIn
     )
     public final void cleanCommand(MessageReceiver msgrec, String[] args) {
         try {
-            if (controller.reportBrewing()) {
+            if (!controller.reportPower()) {
+                controller.inform(msgrec, "error.503");
+                controller.inform(msgrec, "no.power");
+            }
+            else if (controller.reportBrewing()) {
                 controller.inform(msgrec, "error.503");
                 controller.inform(msgrec, "in.progress");
             }
-            else {
+            else if (controller.startCleaningCycle()) {
                 controller.inform(msgrec, "status.200");
-                controller.inform(msgrec, "pot.cleaned");
-                controller.clearDirt();
+                controller.inform(msgrec, "cleaning.cycle.start");
+            }
+            else {
+                controller.inform(msgrec, "error.503");
+                controller.inform(msgrec, "cleaning.cycle.running");
             }
         }
         catch (Exception ex) {
@@ -255,7 +266,11 @@ public final class ProtocolCommandListener extends VisualIllusionsCanaryPluginIn
     )
     public final void checkCommand(MessageReceiver msgrec, String[] args) {
         try {
-            if (controller.reportBrewing()) {
+            if (!controller.reportPower()) {
+                controller.inform(msgrec, "error.503");
+                controller.inform(msgrec, "no.power");
+            }
+            else if (controller.reportBrewing()) {
                 controller.inform(msgrec, "status.200");
                 controller.inform(msgrec, "in.progress");
             }

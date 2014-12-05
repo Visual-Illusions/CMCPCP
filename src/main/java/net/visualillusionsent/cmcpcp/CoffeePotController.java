@@ -21,21 +21,18 @@ import net.canarymod.Canary;
 import net.canarymod.chat.MessageReceiver;
 import net.canarymod.logger.Logman;
 import net.visualillusionsent.utils.PropertiesFile;
-import net.visualillusionsent.utils.TaskManager;
 
-import java.util.Timer;
 import java.util.concurrent.ScheduledFuture;
+
+import static net.visualillusionsent.utils.TaskManager.scheduleDelayedTaskInMinutes;
 
 /** @author Jason (darkdiplomat) */
 final class CoffeePotController {
     private final Logman logman;
     private final PropertiesFile settings;
     private final ProtocolTranslator translator;
-    private final Timer brew = new Timer();
-    private boolean power;
-    private boolean brewing;
-    private boolean cold;
-    private ScheduledFuture coldtask;
+    private boolean power, cold;
+    private ScheduledFuture coldtask, brewtask, cleantask;
 
     public CoffeePotController(CanaryModCoffeePotControlProtocol cmcpcp) {
         this.logman = cmcpcp.getLogman();
@@ -46,8 +43,6 @@ final class CoffeePotController {
         settings.setComments("server.locale", "The default locale to use in messages");
         settings.getInt("coffeepot.size", 12);
         settings.setComments("coffeepot.size", "The number of cups the CoffeePot holds");
-        settings.getInt("brew.time", 120);
-        settings.setComments("brew.time", "The time in seconds to take to brew coffee");
         settings.getString("server.locale", "en_US");
         settings.setComments("server.locale", "The default locale for message");
         settings.getInt("coffeepot.dirt.value", 0);
@@ -63,7 +58,7 @@ final class CoffeePotController {
     }
 
     final int getBrewTime() {
-        return settings.getInt("brew.time");
+        return reportedPotSize() * 45 / 60;
     }
 
     final int reportedDirtLevel() {
@@ -79,13 +74,21 @@ final class CoffeePotController {
         settings.setInt("coffeepot.dirt.value", 0);
         settings.setInt("coffeepot.level", 0);
         settings.save();
+        informAll("pot.cleaned");
+    }
+
+    final boolean startCleaningCycle() {
+        if (cleantask == null || cleantask.isDone()) {
+            cleantask = scheduleDelayedTaskInMinutes(new CleanTask(this), 3);
+            return true;
+        }
+        return false;
     }
 
     final boolean brewCoffee() {
-        if (!brewing) {
+        if (brewtask == null || brewtask.isDone()) {
             addDirt();
-            brew.schedule(new BrewCoffeeTask(this), getBrewTime() * 1000);
-            brewing = true;
+            brewtask = scheduleDelayedTaskInMinutes(new BrewCoffeeTask(this), getBrewTime());
             informAll("status.200");
             informAll("coffee.brewing");
             return true;
@@ -94,7 +97,7 @@ final class CoffeePotController {
     }
 
     final boolean reportBrewing() {
-        return brewing;
+        return brewtask != null && !brewtask.isDone();
     }
 
     final boolean reportPower() {
@@ -103,10 +106,14 @@ final class CoffeePotController {
 
     final void togglePower() {
         power = !power;
+        if (brewtask != null && !brewtask.isDone()) {
+            brewtask.cancel(true);
+            settings.setInt("coffeepot.level", reportedPotSize() / 2);
+        }
         if (coldtask != null && !coldtask.isDone()) {
             coldtask.cancel(true);
         }
-        coldtask = TaskManager.scheduleDelayedTaskInMinutes(new ChillTask(this, !power), 15);
+        coldtask = scheduleDelayedTaskInMinutes(new ChillTask(this, !power), power ? 5 : 15);
     }
 
     final void setCold(boolean cold) {
@@ -128,7 +135,6 @@ final class CoffeePotController {
 
     final void done() {
         informAll("coffee.brewed");
-        brewing = false;
         if (coldtask != null && !coldtask.isDone()) {
             coldtask.cancel(true);
         }
@@ -138,8 +144,15 @@ final class CoffeePotController {
     }
 
     final void cleanUp() {
-        brew.cancel();
-        brew.purge();
+        if (brewtask != null && !brewtask.isDone()) {
+            brewtask.cancel(true);
+        }
+        if (coldtask != null && !coldtask.isDone()) {
+            coldtask.cancel(true);
+        }
+        if (cleantask != null && !cleantask.isDone()) {
+            cleantask.cancel(true);
+        }
     }
 
     final void informAll(String key, Object... args) {
