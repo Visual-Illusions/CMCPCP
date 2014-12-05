@@ -72,13 +72,13 @@ final class CoffeePotController {
 
     final void clearDirt() {
         settings.setInt("coffeepot.dirt.value", 0);
-        settings.setInt("coffeepot.level", 0);
         settings.save();
         informAll("pot.cleaned");
     }
 
     final boolean startCleaningCycle() {
         if (cleantask == null || cleantask.isDone()) {
+            settings.setInt("coffeepot.level", 0);
             cleantask = scheduleDelayedTaskInMinutes(new CleanTask(this), 3);
             return true;
         }

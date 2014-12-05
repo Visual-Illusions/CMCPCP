@@ -151,7 +151,7 @@ public final class ProtocolCommandListener extends VisualIllusionsCanaryPluginIn
                 controller.inform(msgrec, "error.503");
                 controller.inform(msgrec, "no.power");
             }
-            if (controller.reportCleaning()) {
+            else if (controller.reportCleaning()) {
                 controller.inform(msgrec, "error.503");
                 controller.inform(msgrec, "cleaning.cycle.running");
             }
@@ -196,14 +196,12 @@ public final class ProtocolCommandListener extends VisualIllusionsCanaryPluginIn
             else if (controller.reportBrewing()) {
                 controller.inform(msgrec, "error.503");
                 controller.inform(msgrec, "in.progress");
-                return;
             }
             else if (controller.reportedCoffeeLevel() <= 0) {
                 controller.inform(msgrec, "error.400");
                 controller.inform(msgrec, "coffee.out");
-                return;
             }
-            if (msgrec.getReceiverType().equals(ReceiverType.PLAYER)) {
+            else if (msgrec.getReceiverType().equals(ReceiverType.PLAYER)) {
                 controller.takeCup();
                 Player player = (Player) msgrec;
                 Item coffee;
@@ -282,7 +280,7 @@ public final class ProtocolCommandListener extends VisualIllusionsCanaryPluginIn
                 controller.inform(msgrec, "no.power");
             }
             else if (controller.reportCleaning()) {
-                controller.inform(msgrec, "error.200");
+                controller.inform(msgrec, "status.200");
                 controller.inform(msgrec, "cleaning.cycle.running");
             }
             else if (controller.reportBrewing()) {
