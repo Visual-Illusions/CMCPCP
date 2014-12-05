@@ -85,6 +85,10 @@ final class CoffeePotController {
         return false;
     }
 
+    final boolean reportCleaning() {
+        return cleantask != null && !cleantask.isDone();
+    }
+
     final boolean brewCoffee() {
         if (brewtask == null || brewtask.isDone()) {
             addDirt();

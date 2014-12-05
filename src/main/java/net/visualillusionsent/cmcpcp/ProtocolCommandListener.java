@@ -270,6 +270,10 @@ public final class ProtocolCommandListener extends VisualIllusionsCanaryPluginIn
                 controller.inform(msgrec, "error.503");
                 controller.inform(msgrec, "no.power");
             }
+            else if (controller.reportCleaning()) {
+                controller.inform(msgrec, "error.503");
+                controller.inform(msgrec, "cleaning.cycle.running");
+            }
             else if (controller.reportBrewing()) {
                 controller.inform(msgrec, "status.200");
                 controller.inform(msgrec, "in.progress");
