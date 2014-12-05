@@ -11,7 +11,7 @@ Copyright © 2011-2014 Visual Illusions Entertainment
     <inceptionYear>2011</inceptionYear>
     <groupId>net.visualillusionsent</groupId>
     <artifactId>cmcpcp</artifactId>
-    <version>3.2.0-SNAPSHOT</version>
+    <version>3.2.0</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <canary.main.class>${project.groupId}.${project.artifactId}.${project.name}</canary.main.class>
@@ -217,6 +217,8 @@ Copyright © 2011-2014 Visual Illusions Entertainment
                                     <excludes>
                                         <!-- Sponge is unused -->
                                         <exclude>net/visualillusionsent/minecraft/plugin/sponge/**</exclude>
+                                        <!-- Don't include the maven metadata... -->
+                                        <exclude>META-INF/maven/**</exclude>
                                     </excludes>
                                 </filter>
                             </filters>
