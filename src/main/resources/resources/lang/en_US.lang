@@ -28,4 +28,4 @@ cleaning.cycle.start=~BCleaning cycle is now running.
 error.400=~CERROR 400 BAD REQUEST
 error.500=~CERROR 500 INTERNAL SERVER ERROR: {0}
 error.503=~CERROR 503 SERVICE UNAVAILABLE
-status.200=~BSTATUS 200: OK
+status.200=~2STATUS 200: OK

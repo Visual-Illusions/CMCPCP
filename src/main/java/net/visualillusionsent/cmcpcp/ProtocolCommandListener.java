@@ -23,6 +23,7 @@ import net.canarymod.api.inventory.ItemType;
 import net.canarymod.api.potion.PotionEffect;
 import net.canarymod.api.potion.PotionEffectType;
 import net.canarymod.chat.MessageReceiver;
+import net.canarymod.chat.ReceiverType;
 import net.canarymod.commandsys.Command;
 import net.canarymod.commandsys.CommandDependencyException;
 import net.canarymod.commandsys.TabComplete;
@@ -110,6 +111,7 @@ public final class ProtocolCommandListener extends VisualIllusionsCanaryPluginIn
         if (!controller.reportPower()) {
             controller.togglePower();
             controller.inform(msgrec, "status.200");
+            controller.inform(msgrec, "power.on");
         }
         else {
             controller.inform(msgrec, "error.503");
@@ -128,6 +130,7 @@ public final class ProtocolCommandListener extends VisualIllusionsCanaryPluginIn
         if (controller.reportPower()) {
             controller.togglePower();
             controller.inform(msgrec, "status.200");
+            controller.inform(msgrec, "power.off");
         }
         else {
             controller.inform(msgrec, "error.503");
@@ -147,6 +150,10 @@ public final class ProtocolCommandListener extends VisualIllusionsCanaryPluginIn
             if (!controller.reportPower()) {
                 controller.inform(msgrec, "error.503");
                 controller.inform(msgrec, "no.power");
+            }
+            if (controller.reportCleaning()) {
+                controller.inform(msgrec, "error.503");
+                controller.inform(msgrec, "cleaning.cycle.running");
             }
             else if (controller.reportedCoffeeLevel() <= 0) {
                 if (controller.brewCoffee()) {
@@ -182,6 +189,10 @@ public final class ProtocolCommandListener extends VisualIllusionsCanaryPluginIn
                 controller.inform(msgrec, "error.503");
                 controller.inform(msgrec, "no.power");
             }
+            else if (controller.reportCleaning()) {
+                controller.inform(msgrec, "error.503");
+                controller.inform(msgrec, "cleaning.cycle.running");
+            }
             else if (controller.reportBrewing()) {
                 controller.inform(msgrec, "error.503");
                 controller.inform(msgrec, "in.progress");
@@ -192,7 +203,7 @@ public final class ProtocolCommandListener extends VisualIllusionsCanaryPluginIn
                 controller.inform(msgrec, "coffee.out");
                 return;
             }
-            if (msgrec instanceof Player) {
+            if (msgrec.getReceiverType().equals(ReceiverType.PLAYER)) {
                 controller.takeCup();
                 Player player = (Player) msgrec;
                 Item coffee;
@@ -271,7 +282,7 @@ public final class ProtocolCommandListener extends VisualIllusionsCanaryPluginIn
                 controller.inform(msgrec, "no.power");
             }
             else if (controller.reportCleaning()) {
-                controller.inform(msgrec, "error.503");
+                controller.inform(msgrec, "error.200");
                 controller.inform(msgrec, "cleaning.cycle.running");
             }
             else if (controller.reportBrewing()) {
@@ -279,7 +290,6 @@ public final class ProtocolCommandListener extends VisualIllusionsCanaryPluginIn
                 controller.inform(msgrec, "in.progress");
             }
             else {
-                controller.inform(msgrec, "status.200");
                 // Coffee Left
                 String color = ChatFormat.RED.toString(); // 0%
                 float percent = controller.reportedCoffeeLevel() * 100.0F / controller.reportedPotSize();
@@ -302,6 +312,7 @@ public final class ProtocolCommandListener extends VisualIllusionsCanaryPluginIn
                 else if (percent > 0) {
                     color = ChatFormat.LIGHT_RED.toString();
                 }
+                controller.inform(msgrec, "status.200");
                 controller.inform(msgrec, "coffee.left", color.concat(String.valueOf(controller.reportedCoffeeLevel())));
                 // Check Dirt Level
                 if (controller.reportedDirtLevel() >= 5) {
