@@ -48,8 +48,7 @@ public final class ProtocolCommandListener extends VisualIllusionsCanaryPluginIn
             aliases = { "cmcpcp" },
             description = "CanaryModCoffeePotControlProtocol command",
             permissions = { "cmcpcp.main" },
-            toolTip = "/cmcpcp [brew|get|clean|check|cfgreload]",
-            tabCompleteMethod = "protoComp"
+            toolTip = "/cmcpcp [brew|get|clean|check|cfgreload]"
     )
     public final void protocolCommand(MessageReceiver msgrec, String[] args) {
         this.sendInformation(msgrec);
@@ -59,7 +58,8 @@ public final class ProtocolCommandListener extends VisualIllusionsCanaryPluginIn
             aliases = { "cfgreload" },
             description = "CMCPCP Config Reload",
             permissions = { "cmcpcp.cfgreload" },
-            toolTip = "/cmcpcp cfgreload"
+            toolTip = "/cmcpcp cfgreload",
+            parent = "cmcpcp"
     )
     public final void cfgReloadCommand(MessageReceiver msgrec, String[] args) {
         try {
@@ -217,7 +217,7 @@ public final class ProtocolCommandListener extends VisualIllusionsCanaryPluginIn
         }
     }
 
-    @TabComplete
+    @TabComplete(commands = "cmcpcp")
     public final List<String> protoComp(MessageReceiver msgrec, String[] args) {
         if (args.length == 1) {
             List<String> matching = TabCompleteHelper.matchTo(args, new String[]{ "brew", "get", "clean", "check", "cfgreload" });
