@@ -31,7 +31,7 @@ final class CoffeePotController {
     private final Logman logman;
     private final PropertiesFile settings;
     private final ProtocolTranslator translator;
-    private boolean power, cold;
+    private boolean power = true, cold = true;
     private ScheduledFuture coldtask, brewtask, cleantask;
 
     public CoffeePotController(CanaryModCoffeePotControlProtocol cmcpcp) {
@@ -51,6 +51,7 @@ final class CoffeePotController {
         settings.setComments("coffeepot.level", "DO NOT EDIT LEVEL VALUE");
         settings.save();
         translator = new ProtocolTranslator(cmcpcp, settings.getString("server.locale"), settings.getBoolean("update.lang"));
+        scheduleDelayedTaskInMinutes(new ChillTask(this, false), getBrewTime()); // Start warming up coffee
     }
 
     final int reportedPotSize() {
@@ -58,7 +59,7 @@ final class CoffeePotController {
     }
 
     final int getBrewTime() {
-        return reportedPotSize() * 45 / 60;
+        return reportedPotSize() * 15 / 60;
     }
 
     final int reportedDirtLevel() {
@@ -78,6 +79,10 @@ final class CoffeePotController {
 
     final boolean startCleaningCycle() {
         if (cleantask == null || cleantask.isDone()) {
+            if (coldtask != null && !coldtask.isDone()) {
+                coldtask.cancel(true);
+                cold = true;
+            }
             settings.setInt("coffeepot.level", 0);
             cleantask = scheduleDelayedTaskInMinutes(new CleanTask(this), 3);
             return true;
@@ -91,6 +96,9 @@ final class CoffeePotController {
 
     final boolean brewCoffee() {
         if (brewtask == null || brewtask.isDone()) {
+            if (coldtask != null && !coldtask.isDone()) {
+                coldtask.cancel(true);
+            }
             addDirt();
             brewtask = scheduleDelayedTaskInMinutes(new BrewCoffeeTask(this), getBrewTime());
             informAll("status.200");
@@ -117,7 +125,7 @@ final class CoffeePotController {
         if (coldtask != null && !coldtask.isDone()) {
             coldtask.cancel(true);
         }
-        coldtask = scheduleDelayedTaskInMinutes(new ChillTask(this, !power), power ? 5 : 15);
+        coldtask = scheduleDelayedTaskInMinutes(new ChillTask(this, !power), power ? getBrewTime() : getBrewTime() * 3);
     }
 
     final void setCold(boolean cold) {
@@ -150,6 +158,7 @@ final class CoffeePotController {
     final void cleanUp() {
         if (brewtask != null && !brewtask.isDone()) {
             brewtask.cancel(true);
+            settings.setInt("coffeepot.level", reportedPotSize() / 2);
         }
         if (coldtask != null && !coldtask.isDone()) {
             coldtask.cancel(true);

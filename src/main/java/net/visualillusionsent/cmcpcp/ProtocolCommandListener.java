@@ -17,6 +17,7 @@
  */
 package net.visualillusionsent.cmcpcp;
 
+import com.google.common.collect.Lists;
 import net.canarymod.api.entity.living.humanoid.Player;
 import net.canarymod.api.inventory.Item;
 import net.canarymod.api.inventory.ItemType;
@@ -31,7 +32,6 @@ import net.canarymod.commandsys.TabCompleteHelper;
 import net.visualillusionsent.minecraft.plugin.ChatFormat;
 import net.visualillusionsent.minecraft.plugin.canary.VisualIllusionsCanaryPluginInformationCommand;
 
-import java.util.Iterator;
 import java.util.List;
 
 import static net.canarymod.Canary.factory;
@@ -326,14 +326,21 @@ public final class ProtocolCommandListener extends VisualIllusionsCanaryPluginIn
     @TabComplete(commands = "cmcpcp")
     public final List<String> protoComp(MessageReceiver msgrec, String[] args) {
         if (args.length == 1) {
-            List<String> matching = TabCompleteHelper.matchTo(args, new String[]{ "on", "off", "brew", "get", "clean", "check", "cfgreload" });
-            Iterator<String> matchItr = matching.iterator();
-            while (matchItr.hasNext()) {
-                if (!msgrec.hasPermission("cmcpcp.".concat(matchItr.next()))) {
-                    matchItr.remove();
+            List<String> tempMatch;
+            List<String> matching = Lists.newArrayList();
+            if (msgrec.hasPermission("cmcpcp.use")) {
+                tempMatch = TabCompleteHelper.matchTo(args, new String[]{ "on", "off", "brew", "get", "clean", "check" });
+                if (tempMatch != null) {
+                    matching.addAll(tempMatch);
                 }
             }
-            return matching;
+            if (msgrec.hasPermission("cmcpcp.cfgreload")) {
+                tempMatch = TabCompleteHelper.matchTo(args, new String[]{ "cfgreload" });
+                if (tempMatch != null) {
+                    matching.addAll(tempMatch);
+                }
+            }
+            return matching.isEmpty() ? null : matching;
         }
         return null;
     }
