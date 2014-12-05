@@ -17,10 +17,11 @@
  */
 package net.visualillusionsent.cmcpcp;
 
-import net.canarymod.Canary;
 import net.canarymod.api.entity.living.humanoid.Player;
 import net.canarymod.api.inventory.Item;
 import net.canarymod.api.inventory.ItemType;
+import net.canarymod.api.potion.PotionEffect;
+import net.canarymod.api.potion.PotionEffectType;
 import net.canarymod.chat.MessageReceiver;
 import net.canarymod.commandsys.Command;
 import net.canarymod.commandsys.CommandDependencyException;
@@ -32,23 +33,50 @@ import net.visualillusionsent.minecraft.plugin.canary.VisualIllusionsCanaryPlugi
 import java.util.Iterator;
 import java.util.List;
 
+import static net.canarymod.Canary.factory;
+import static net.canarymod.api.inventory.helper.PotionItemHelper.addCustomPotionEffects;
+import static net.canarymod.api.potion.PotionEffectType.DIGSLOWDOWN;
+import static net.canarymod.api.potion.PotionEffectType.DIGSPEED;
+import static net.canarymod.api.potion.PotionEffectType.MOVESLOWDOWN;
+import static net.canarymod.api.potion.PotionEffectType.MOVESPEED;
+import static net.canarymod.api.potion.PotionEffectType.POISON;
+import static net.canarymod.api.potion.PotionEffectType.REGENERATION;
+
 /** @author Jason (darkdiplomat) */
 public final class ProtocolCommandListener extends VisualIllusionsCanaryPluginInformationCommand {
 
-    private final Item coffee = Canary.factory().getItemFactory().newItem(ItemType.Potion, 47, 1);
+    private final Item coffeeHot = factory().getItemFactory().newItem(ItemType.Potion, 8201, 1);
+    private final Item coffeeCold = factory().getItemFactory().newItem(ItemType.Potion, 8201, 1);
+    private final Item taintedCoffee = factory().getItemFactory().newItem(ItemType.Potion, 8204, 1);
+    private final Item taintedCoffeeCold = factory().getItemFactory().newItem(ItemType.Potion, 8204, 1);
     private final CoffeePotController controller;
 
     public ProtocolCommandListener(CanaryModCoffeePotControlProtocol proto) throws CommandDependencyException {
         super(proto);
         this.controller = proto.getController();
         proto.registerCommands(this, false);
+
+        coffeeHot.setDisplayName("Cup-o-Coffee");
+        coffeeCold.setDisplayName("Cold Cup-o-Coffee");
+        taintedCoffee.setDisplayName("Tainted Cup-o-Coffee");
+        taintedCoffeeCold.setDisplayName("Tainted Cold Cup-o-Coffee");
+
+        addCustomPotionEffects(coffeeHot, newPotionEffect(REGENERATION, 900, 2), newPotionEffect(MOVESPEED, 900, 2), newPotionEffect(DIGSPEED, 900, 2));
+        addCustomPotionEffects(coffeeCold, newPotionEffect(MOVESPEED, 300, 2), newPotionEffect(DIGSPEED, 300, 2));
+        addCustomPotionEffects(taintedCoffee, newPotionEffect(POISON, 600, 2), newPotionEffect(MOVESLOWDOWN, 600, 2), newPotionEffect(DIGSLOWDOWN, 600, 2));
+        addCustomPotionEffects(taintedCoffeeCold, newPotionEffect(POISON, 900, 2), newPotionEffect(MOVESLOWDOWN, 900, 2), newPotionEffect(DIGSLOWDOWN, 900, 2));
+
+    }
+
+    private static PotionEffect newPotionEffect(PotionEffectType pet, int duration, int amplifier) {
+        return factory().getPotionFactory().newPotionEffect(pet, duration, amplifier);
     }
 
     @Command(
             aliases = { "cmcpcp" },
             description = "CanaryModCoffeePotControlProtocol command",
-            permissions = { "cmcpcp.main" },
-            toolTip = "/cmcpcp [brew|get|clean|check|cfgreload]"
+            permissions = { "" },
+            toolTip = "/cmcpcp [on|off|brew|get|clean|check|cfgreload]"
     )
     public final void protocolCommand(MessageReceiver msgrec, String[] args) {
         this.sendInformation(msgrec);
@@ -72,15 +100,55 @@ public final class ProtocolCommandListener extends VisualIllusionsCanaryPluginIn
     }
 
     @Command(
+            aliases = { "on" },
+            description = "CMCPCP ON Command",
+            permissions = { "cmcpcp.use" },
+            toolTip = "/cmcpcp on",
+            parent = "cmcpcp"
+    )
+    public final void onCommand(MessageReceiver msgrec, String[] args) {
+        if (!controller.reportPower()) {
+            controller.togglePower();
+            controller.inform(msgrec, "status.200");
+        }
+        else {
+            controller.inform(msgrec, "error.503");
+            controller.inform(msgrec, "power.already.on");
+        }
+    }
+
+    @Command(
+            aliases = { "off" },
+            description = "CMCPCP OFF Command",
+            permissions = { "cmcpcp.use" },
+            toolTip = "/cmcpcp off",
+            parent = "cmcpcp"
+    )
+    public final void offCommand(MessageReceiver msgrec, String[] args) {
+        if (controller.reportPower()) {
+            controller.togglePower();
+            controller.inform(msgrec, "status.200");
+        }
+        else {
+            controller.inform(msgrec, "error.503");
+            controller.inform(msgrec, "power.already.off");
+        }
+    }
+
+    @Command(
             aliases = { "brew" },
             description = "CMCPCP BREW Command",
-            permissions = { "cmcpcp.brew" },
+            permissions = { "cmcpcp.use" },
             toolTip = "/cmcpcp brew",
             parent = "cmcpcp"
     )
     public final void brewCommand(MessageReceiver msgrec, String[] args) {
         try {
-            if (controller.reportedCoffeeLevel() <= 0) {
+            if (!controller.reportPower()) {
+                controller.inform(msgrec, "error.503");
+                controller.inform(msgrec, "no.power");
+            }
+            else if (controller.reportedCoffeeLevel() <= 0) {
                 if (controller.brewCoffee()) {
                     if (controller.reportedDirtLevel() >= 5) {
                         controller.informAll("pot.dirty");
@@ -104,7 +172,7 @@ public final class ProtocolCommandListener extends VisualIllusionsCanaryPluginIn
     @Command(
             aliases = { "get" },
             description = "CMCPCP GET Command",
-            permissions = { "cmcpcp.get" },
+            permissions = { "cmcpcp.use" },
             toolTip = "/cmcpcp get",
             parent = "cmcpcp"
     )
@@ -123,18 +191,25 @@ public final class ProtocolCommandListener extends VisualIllusionsCanaryPluginIn
             if (msgrec instanceof Player) {
                 controller.takeCup();
                 Player player = (Player) msgrec;
-                Item coffee = this.coffee.clone();
-                coffee.getMetaTag().put("CMCPCP_COLDTIME", System.currentTimeMillis() + 600000);
+                Item coffee;
                 if (controller.reportedDirtLevel() >= 5) {
-                    coffee.setDisplayName("Tainted Cup-o-Coffee");
-                    coffee.getMetaTag().put("CMCPCP_TAINTED", true);
-                    player.giveItem(coffee);
+                    if (controller.isCold()) {
+                        coffee = this.taintedCoffeeCold.clone();
+                    }
+                    else {
+                        coffee = this.taintedCoffee.clone();
+                    }
                 }
                 else {
-                    coffee.setDisplayName("Cup-o-Coffee");
-                    coffee.getMetaTag().put("CMCPCP_TAINTED", false);
-                    player.giveItem(coffee);
+                    if (controller.isCold()) {
+                        coffee = this.coffeeCold.clone();
+                    }
+                    else {
+                        coffee = this.coffeeHot.clone();
+                    }
                 }
+                player.giveItem(coffee);
+                controller.inform(msgrec, "status.200");
                 controller.inform(msgrec, "one.cup");
             }
             else {
@@ -150,7 +225,7 @@ public final class ProtocolCommandListener extends VisualIllusionsCanaryPluginIn
     @Command(
             aliases = { "clean" },
             description = "CMCPCP CLEAN Command",
-            permissions = { "cmcpcp.clean" },
+            permissions = { "cmcpcp.use" },
             toolTip = "/cmcpcp clean",
             parent = "cmcpcp"
     )
@@ -161,7 +236,8 @@ public final class ProtocolCommandListener extends VisualIllusionsCanaryPluginIn
                 controller.inform(msgrec, "in.progress");
             }
             else {
-                msgrec.message("§6[CMCPCP] §bCoffee Pot cleaned.");
+                controller.inform(msgrec, "status.200");
+                controller.inform(msgrec, "pot.cleaned");
                 controller.clearDirt();
             }
         }
@@ -173,16 +249,18 @@ public final class ProtocolCommandListener extends VisualIllusionsCanaryPluginIn
     @Command(
             aliases = { "check" },
             description = "CMCPCP CHECK Command",
-            permissions = { "cmcpcp.check" },
+            permissions = { "cmcpcp.use" },
             toolTip = "/cmcpcp check",
             parent = "cmcpcp"
     )
     public final void checkCommand(MessageReceiver msgrec, String[] args) {
         try {
             if (controller.reportBrewing()) {
-                msgrec.message("§6[CMCPCP] §bBrewing in progress");
+                controller.inform(msgrec, "status.200");
+                controller.inform(msgrec, "in.progress");
             }
             else {
+                controller.inform(msgrec, "status.200");
                 // Coffee Left
                 String color = ChatFormat.RED.toString(); // 0%
                 float percent = controller.reportedCoffeeLevel() * 100.0F / controller.reportedPotSize();
@@ -220,7 +298,7 @@ public final class ProtocolCommandListener extends VisualIllusionsCanaryPluginIn
     @TabComplete(commands = "cmcpcp")
     public final List<String> protoComp(MessageReceiver msgrec, String[] args) {
         if (args.length == 1) {
-            List<String> matching = TabCompleteHelper.matchTo(args, new String[]{ "brew", "get", "clean", "check", "cfgreload" });
+            List<String> matching = TabCompleteHelper.matchTo(args, new String[]{ "on", "off", "brew", "get", "clean", "check", "cfgreload" });
             Iterator<String> matchItr = matching.iterator();
             while (matchItr.hasNext()) {
                 if (!msgrec.hasPermission("cmcpcp.".concat(matchItr.next()))) {

@@ -17,7 +17,6 @@
  */
 package net.visualillusionsent.cmcpcp;
 
-import net.canarymod.Canary;
 import net.canarymod.commandsys.CommandDependencyException;
 import net.visualillusionsent.minecraft.plugin.canary.VisualIllusionsCanaryPlugin;
 import net.visualillusionsent.utils.UtilityException;
@@ -32,7 +31,6 @@ public final class CanaryModCoffeePotControlProtocol extends VisualIllusionsCana
             super.enable();
             this.cpc = new CoffeePotController(this);
             new ProtocolCommandListener(this);
-            Canary.hooks().registerListener(new ProtocolListener(), this);
             return true;
         }
         catch (UtilityException uex) {

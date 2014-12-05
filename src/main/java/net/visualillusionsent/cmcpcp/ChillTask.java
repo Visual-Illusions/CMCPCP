@@ -17,17 +17,19 @@
  */
 package net.visualillusionsent.cmcpcp;
 
-import java.util.TimerTask;
-
-/** @author Jason (darkdiplomat) */
-final class BrewCoffeeTask extends TimerTask {
+/**
+ * @author Jason Jones (darkdiplomat)
+ */
+final class ChillTask implements Runnable {
     private final CoffeePotController controller;
+    private final boolean goingCold;
 
-    public BrewCoffeeTask(CoffeePotController controller) {
+    ChillTask(CoffeePotController controller, boolean goingCold) {
         this.controller = controller;
+        this.goingCold = goingCold;
     }
 
-    public final void run() {
-        controller.done();
+    public void run() {
+        controller.setCold(this.goingCold);
     }
 }

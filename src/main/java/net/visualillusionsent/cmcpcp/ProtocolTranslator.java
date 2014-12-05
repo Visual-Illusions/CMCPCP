@@ -36,23 +36,14 @@ package net.visualillusionsent.cmcpcp;
 
 import net.visualillusionsent.minecraft.plugin.ChatFormat;
 import net.visualillusionsent.minecraft.plugin.MessageTranslator;
-import net.visualillusionsent.minecraft.plugin.PluginInitializationException;
-import net.visualillusionsent.utils.FileUtils;
-import net.visualillusionsent.utils.JarUtils;
-import net.visualillusionsent.utils.LocaleHelper;
-
-import java.io.File;
-import java.io.FileInputStream;
 
 /** @author Jason (darkdiplomat) */
-public final class ProtocolTranslator extends MessageTranslator {
-    private final String prefix = "~A[~6CMCPCP~A] ";
-
+final class ProtocolTranslator extends MessageTranslator {
     ProtocolTranslator(CanaryModCoffeePotControlProtocol cmcpcp, String locale, boolean updateLang) {
         super(cmcpcp, locale, updateLang);
     }
 
     public final String translate(String key, String locale, Object... args) {
-        return ChatFormat.formatString(prefix.concat(localeTranslate(key, locale, args)), "~");
+        return ChatFormat.formatString("~A[~6CMCPCP~A] ".concat(localeTranslate(key, locale, args)), "~");
     }
 }

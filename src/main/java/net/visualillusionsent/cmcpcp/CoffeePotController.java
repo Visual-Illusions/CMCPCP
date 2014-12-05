@@ -18,20 +18,24 @@
 package net.visualillusionsent.cmcpcp;
 
 import net.canarymod.Canary;
-import net.canarymod.api.entity.living.humanoid.Player;
 import net.canarymod.chat.MessageReceiver;
 import net.canarymod.logger.Logman;
 import net.visualillusionsent.utils.PropertiesFile;
+import net.visualillusionsent.utils.TaskManager;
 
 import java.util.Timer;
+import java.util.concurrent.ScheduledFuture;
 
 /** @author Jason (darkdiplomat) */
-public final class CoffeePotController {
+final class CoffeePotController {
     private final Logman logman;
     private final PropertiesFile settings;
     private final ProtocolTranslator translator;
-    private boolean isBrewing;
-    private Timer brew;
+    private final Timer brew = new Timer();
+    private boolean power;
+    private boolean brewing;
+    private boolean cold;
+    private ScheduledFuture coldtask;
 
     public CoffeePotController(CanaryModCoffeePotControlProtocol cmcpcp) {
         this.logman = cmcpcp.getLogman();
@@ -51,7 +55,6 @@ public final class CoffeePotController {
         settings.getInt("coffeepot.level", 0);
         settings.setComments("coffeepot.level", "DO NOT EDIT LEVEL VALUE");
         settings.save();
-        brew = new Timer();
         translator = new ProtocolTranslator(cmcpcp, settings.getString("server.locale"), settings.getBoolean("update.lang"));
     }
 
@@ -79,10 +82,11 @@ public final class CoffeePotController {
     }
 
     final boolean brewCoffee() {
-        if (!isBrewing) {
+        if (!brewing) {
             addDirt();
             brew.schedule(new BrewCoffeeTask(this), getBrewTime() * 1000);
-            isBrewing = true;
+            brewing = true;
+            informAll("status.200");
             informAll("coffee.brewing");
             return true;
         }
@@ -90,7 +94,27 @@ public final class CoffeePotController {
     }
 
     final boolean reportBrewing() {
-        return isBrewing;
+        return brewing;
+    }
+
+    final boolean reportPower() {
+        return power;
+    }
+
+    final void togglePower() {
+        power = !power;
+        if (coldtask != null && !coldtask.isDone()) {
+            coldtask.cancel(true);
+        }
+        coldtask = TaskManager.scheduleDelayedTaskInMinutes(new ChillTask(this, !power), 15);
+    }
+
+    final void setCold(boolean cold) {
+        this.cold = cold;
+    }
+
+    final boolean isCold() {
+        return this.cold;
     }
 
     final int reportedCoffeeLevel() {
@@ -104,7 +128,11 @@ public final class CoffeePotController {
 
     final void done() {
         informAll("coffee.brewed");
-        isBrewing = false;
+        brewing = false;
+        if (coldtask != null && !coldtask.isDone()) {
+            coldtask.cancel(true);
+        }
+        cold = false;
         settings.setInt("coffeepot.level", reportedPotSize());
         settings.save();
     }
@@ -121,15 +149,7 @@ public final class CoffeePotController {
     }
 
     final void inform(MessageReceiver msgrec, String key, Object... args) {
-        String locale = settings.getString("server.locale");
-        if (msgrec instanceof Player) {
-            locale = ((Player) msgrec).getLocale();
-        }
-        msgrec.message(translator.translate(key, locale, args));
-    }
-
-    final boolean updateLang() {
-        return settings.getBoolean("update.lang");
+        msgrec.message(translator.translate(key, msgrec.getLocale(), args));
     }
 
     final void reload() {
