@@ -11,7 +11,7 @@ Copyright © 2011-2014 Visual Illusions Entertainment
     <inceptionYear>2011</inceptionYear>
     <groupId>net.visualillusionsent</groupId>
     <artifactId>cmcpcp</artifactId>
-    <version>3.2.0</version>
+    <version>3.2.1-SNAPSHOT</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <canary.main.class>${project.groupId}.${project.artifactId}.${project.name}</canary.main.class>
@@ -19,6 +19,7 @@ Copyright © 2011-2014 Visual Illusions Entertainment
         <status.url>http://status.visualillusionsent.net/</status.url>
         <devs>darkdiplomat</devs>
         <build.number/>
+        <build.number.display/>
         <!-- Jar Signing -->
         <keystore.path/>
         <keystore.alias/>
@@ -87,7 +88,7 @@ Copyright © 2011-2014 Visual Illusions Entertainment
         </dependency>
     </dependencies>
     <build>
-        <finalName>${project.name}-${project.version}-${build.number}</finalName>
+        <finalName>${project.name}-${project.version}${build.number.display}</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -209,8 +210,10 @@ Copyright © 2011-2014 Visual Illusions Entertainment
                                 <filter>
                                     <artifact>net.visualillusionsent:mcpluginlib</artifact>
                                     <includes>
-                                        <!-- Always include the META stuff -->
-                                        <include>META-INF/**</include>
+                                        <!-- Always include the license stuff -->
+                                        <include>META-INF/license/**</include>
+                                        <!-- Always include the Root certificate -->
+                                        <include>META-INF/certificates/**</include>
                                         <!-- Always include base VIMCPlugin stuff -->
                                         <include>net/visualillusionsent/minecraft/plugin/**</include>
                                     </includes>
@@ -237,6 +240,18 @@ Copyright © 2011-2014 Visual Illusions Entertainment
         </plugins>
     </build>
     <profiles>
+        <profile>
+            <id>jenkins</id>
+            <activation>
+                <property>
+                    <name>BUILD_NUMBER</name>
+                </property>
+            </activation>
+            <properties>
+                <build.number>${BUILD_NUMBER}</build.number>
+                <build.number.display>-b${BUILD_NUMBER}</build.number.display>
+            </properties>
+        </profile>
         <profile>
             <id>sign-jar</id>
             <build>
